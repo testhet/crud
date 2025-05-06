@@ -1,8 +1,10 @@
 package model;
 
+import java.sql.Date;
+
 public class Patient {
 
-
+    private User user;
     private int patient_id;
     private String date_of_birth;
     private String gender;
@@ -12,8 +14,8 @@ public class Patient {
     private String insuranceID;
     private String insurance_provider;
 
-    public Patient(int patient_id, String date_of_birth, String gender, String address, int phone, int emergency_contact_number, String insuranceID, String insurance_provider) {
-
+    public Patient(User user,int patient_id, String date_of_birth, String gender, String address, int phone, int emergency_contact_number, String insuranceID, String insurance_provider) {
+        this.user = user;
         this.patient_id = patient_id;
         this.date_of_birth = date_of_birth;
         this.gender = gender;
@@ -23,17 +25,14 @@ public class Patient {
         this.insuranceID = insuranceID;
         this.insurance_provider = insurance_provider;
     }
-    public Patient(String date_of_birth, String gender, String address, int phone, int emergency_contact_number, String insuranceID, String insurance_provider) {
 
-        this.date_of_birth = date_of_birth;
-        this.gender = gender;
-        this.address = address;
-        this.phone = phone;
-        this.emergency_contact_number = emergency_contact_number;
-        this.insuranceID = insuranceID;
-        this.insurance_provider = insurance_provider;
+    public Patient() {
+
     }
 
+    public User getUser() {
+        return user;
+    }
     public int getPatient_id() {
         return patient_id;
     }
@@ -97,6 +96,8 @@ public class Patient {
     public void setInsurance_provider(String insurance_provider) {
         this.insurance_provider = insurance_provider;
     }
+
+
 }
 
 

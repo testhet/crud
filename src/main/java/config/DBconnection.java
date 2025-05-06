@@ -1,32 +1,41 @@
 package config;
 
-import java.io.FileInputStream;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
+
 public class DBconnection {
-public static Connection conn= null;
+    private static HikariDataSource dataSource;
 
-    public static Connection getConnection() {
-        if (conn == null){
-            Properties properties = new Properties();
-            try (FileInputStream file = new FileInputStream("src/main/java/config/config.properties")){
-                properties.load(file);
+    static {
+        Properties properties = new Properties();
+        try (FileInputStream input = new FileInputStream("src/main/resources/config.properties")) {
+            properties.load(input);
 
-                String url = properties.getProperty("db.url");
-                String username = properties.getProperty("db.username");
-                String password = properties.getProperty("db.password");
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(properties.getProperty("db.url"));
+            config.setUsername(properties.getProperty("db.username"));
+            config.setPassword(properties.getProperty("db.password"));
+            config.setMaximumPoolSize(7);
+            config.setIdleTimeout(30000);
+            config.setMaxLifetime(600000);
+            config.setConnectionTimeout(30000);
 
-                conn = DriverManager.getConnection(url , username, password);
-                System.out.println("db connected Successfully");
+            dataSource = new HikariDataSource(config);
 
-            } catch (Exception e) {
-                System.out.println("Error connecting to database.");
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load database configuration", e);
         }
-        return conn;
     }
+    public static Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
+
 }
+

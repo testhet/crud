@@ -1,21 +1,22 @@
 package model;
 
 public class Doctor {
-
+    private User user;
     private int doctor_id;
     private String specialization;
     private String department;
 
 
-    public Doctor(int doctor_id, String specialization, String department) {
+    public Doctor(User user,int doctor_id, String specialization, String department) {
+        this.user = user;
         this.doctor_id = doctor_id;
         this.specialization = specialization;
         this.department = department;
     }
-    public Doctor(String specialization, String department) {
 
-        this.specialization = specialization;
-        this.department = department;
+
+    public User getUser() {
+        return user;
     }
 
     public int getDoctor_id() {
