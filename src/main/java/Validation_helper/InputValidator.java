@@ -2,6 +2,7 @@ package Validation_helper;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -26,18 +27,37 @@ public class InputValidator {
         }
     }
 
-    public static String getValidatedDate(String s) {
-        while (true) {
-            System.out.print(s);
-            String input = scanner.nextLine().trim();
-            try {
-                LocalDate parsedDate = LocalDate.parse(input);
-                if (parsedDate.isAfter(LocalDate.now())) {
-                    return input;
-                }
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format. Use YYYY-MM-DD.");
+//    public static String getValidatedDate(String s) {
+//        while (true) {
+//            System.out.print(s);
+//            String input = scanner.nextLine().trim();
+//            try {
+//                LocalDate parsedDate = LocalDate.parse(input);
+//                if (parsedDate.isAfter(LocalDate.now())) {
+//                    return input;
+//                }
+//            } catch (DateTimeParseException e) {
+//                System.out.println("Invalid date format. Use YYYY-MM-DD.");
+//            }
+//        }
+//    }
+
+    public static String getValidatedDate(String input) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");  // Adjust this to your desired format
+        try {
+            // Parse the date using the specified format
+            LocalDate parsedDate = LocalDate.parse(input, formatter);
+
+            // Check if the parsed date is in the future
+            if (parsedDate.isAfter(LocalDate.now())) {
+                return input;  // Valid future date
+            } else {
+                System.out.println("The date must be in the future.");
+                return null;
             }
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Please use the correct format (yyyy-MM-dd).");
+            return null;  // Return null if invalid date
         }
     }
 
@@ -146,7 +166,7 @@ public class InputValidator {
 
     public static String getValidatedTextField(String s) {
         Scanner scanner = new Scanner(System.in);
-        String textPattern = "^[a-zA-Z0-9,-]+$";
+        String textPattern = "^[a-zA-Z0-9,\\-\\s]+$";
 
         while (true) {
             System.out.print(s);

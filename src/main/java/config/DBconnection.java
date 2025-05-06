@@ -15,7 +15,7 @@ public class DBconnection {
 
     static {
         Properties properties = new Properties();
-        try (FileInputStream input = new FileInputStream("src/main/resources/config.properties")) {
+        try (FileInputStream input = new FileInputStream("src/main/java/config/config.properties")) {
             properties.load(input);
 
             HikariConfig config = new HikariConfig();
@@ -23,7 +23,6 @@ public class DBconnection {
             config.setUsername(properties.getProperty("db.username"));
             config.setPassword(properties.getProperty("db.password"));
             config.setMaximumPoolSize(7);
-            config.setIdleTimeout(30000);
             config.setMaxLifetime(600000);
             config.setConnectionTimeout(30000);
 

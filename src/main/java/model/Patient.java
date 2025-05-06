@@ -96,6 +96,9 @@ public class Patient {
     }
 
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
 
 

@@ -11,11 +11,12 @@ public class UserController {
 
     private UserDAO userDAO = new UserDAO();
 
-    public void addUser() throws SQLException {
+    public User addUser() throws SQLException {
         User user = new User();
         String email = "";
 
         while (true) {
+            System.out.println("Enter Email : ");
             email = InputValidator.getValidatedEmail(email);
 
             try {
@@ -26,7 +27,7 @@ public class UserController {
                 }
             } catch (SQLException e) {
                 System.out.println("Database error: " + e.getMessage());
-                return;
+                return null;
             }
         }
 
@@ -35,8 +36,10 @@ public class UserController {
         user.setPassword(InputValidator.getValidatedPassword("Set Your Password : "));
         user.setRole(InputValidator.getValidatedRole("Choose Role From: Doctor & Patient : "));
 
-        userDAO.addUser(user);
+        int userId = userDAO.addUser(user);
+        user.setId(userId);
 
+        return user;
     }
 
 

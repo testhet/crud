@@ -1,17 +1,19 @@
 package main;
 
 import controller.AppointmentController;
+import controller.PatientController;
 import controller.UserController;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
-        UserController controller = new UserController();
+        PatientController controller = new PatientController();
         Scanner scanner = new Scanner(System.in);
 
-        controller.loginUserFromInput();
+        controller.registerPatient();
 
 //        AppointmentController controller = new AppointmentController();
 //        Scanner scanner = new Scanner(System.in);
