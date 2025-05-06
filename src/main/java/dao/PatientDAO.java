@@ -20,8 +20,8 @@ public class PatientDAO {
         stmt.setString(2,patient.getDate_of_birth());
         stmt.setString(3,patient.getGender());
         stmt.setString(4,patient.getAddress());
-        stmt.setInt(5,patient.getPhone());
-        stmt.setInt(6,patient.getEmergency_contact_number());
+        stmt.setLong(5,patient.getPhone());
+        stmt.setLong(6,patient.getEmergency_contact_number());
         stmt.setString(7,patient.getInsuranceID());
         stmt.setString(8,patient.getInsurance_provider());
 

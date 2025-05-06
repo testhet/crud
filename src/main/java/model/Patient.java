@@ -1,7 +1,5 @@
 package model;
 
-import java.sql.Date;
-
 public class Patient {
 
     private User user;
@@ -9,8 +7,8 @@ public class Patient {
     private String date_of_birth;
     private String gender;
     private String address;
-    private int phone;
-    private int emergency_contact_number;
+    private long phone;
+    private long emergency_contact_number;
     private String insuranceID;
     private String insurance_provider;
 
@@ -65,19 +63,19 @@ public class Patient {
         this.address = address;
     }
 
-    public int getPhone() {
+    public long getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(long phone) {
         this.phone = phone;
     }
 
-    public int getEmergency_contact_number() {
+    public long getEmergency_contact_number() {
         return emergency_contact_number;
     }
 
-    public void setEmergency_contact_number(int emergency_contact_number) {
+    public void setEmergency_contact_number(long emergency_contact_number) {
         this.emergency_contact_number = emergency_contact_number;
     }
 
