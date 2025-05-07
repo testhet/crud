@@ -5,6 +5,7 @@ import Validation_helper.InputValidator;
 import model.User;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 
 public class UserController {
@@ -36,10 +37,17 @@ public class UserController {
         user.setPassword(InputValidator.getValidatedPassword("Set Your Password : "));
         user.setRole(InputValidator.getValidatedRole("Choose Role From: Doctor & Patient : "));
 
-        int userId = userDAO.addUser(user);
-        user.setId(userId);
+        Map<Integer, String> result = userDAO.addUser(user);
+        Map.Entry<Integer, String> entry = result.entrySet().iterator().next();
+        user.setId(entry.getKey());
+
 
         return user;
+    }
+
+    public void deleteUser(User user) throws SQLException {
+        int id = InputValidator.getValidatedInt("");
+        userDAO.deleteUser(id);
     }
 
 

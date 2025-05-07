@@ -12,7 +12,7 @@ public class PatientController {
 
     public void registerPatient() throws SQLException {
         UserController userController = new UserController();
-        User user = userController.addUser();  // ✅ FIXED: method call with ()
+        User user = userController.addUser();
 
         if (user == null) {
             System.out.println("User registration failed.");
@@ -29,10 +29,12 @@ public class PatientController {
         patient.setInsuranceID(InputValidator.getValidatedInsuranceId("Enter Insurance ID : "));
         patient.setInsurance_provider(InputValidator.getValidatedName("Enter Insurance Provider Name : "));
 
-        patientDAO.registerPatient(patient);
-
-
+        try {
+            patientDAO.registerPatient(patient);
+            System.out.println("Patient Registered Successfully");
+        } catch (SQLException e) {
+            userController.deleteUser(user);
+            throw new RuntimeException(e);
+        }
     }
-
-
 }

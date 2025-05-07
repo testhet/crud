@@ -4,16 +4,19 @@ package dao;
 import config.DBconnection;
 import model.User;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+
 public class UserDAO {
 
-    public int addUser(User user) throws SQLException {
-        Connection connection = DBconnection.getConnection();
+    public Map<Integer, String> addUser(User user) throws SQLException {
+        try (Connection connection = DBconnection.getConnection()){
 
-        String sql = "INSERT INTO users (user_name, email, password, role) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO users ( email,user_name, password, role) VALUES (?, ?, ?, ?)";
 
         PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        stmt.setString(1, user.getUser_name());
-        stmt.setString(2, user.getEmail());
+        stmt.setString(1, user.getEmail());
+        stmt.setString(2, user.getUser_name());
         stmt.setString(3, user.getPassword());
         stmt.setString(4, user.getRole());
 
@@ -21,10 +24,32 @@ public class UserDAO {
 
         ResultSet rs = stmt.getGeneratedKeys();
         if (rs.next()) {
-            return rs.getInt(1);
+            int id = rs.getInt(1);
+            String role = user.getRole();
+            Map<Integer, String> result = new HashMap<>();
+            result.put(id, role);
+            return result;
+        
+        } else {
+            throw new SQLException("Failed to retrieve user ID.");
         }
-        return -1;
+    } catch (SQLIntegrityConstraintViolationException e) {
+        throw new SQLException("Email already exists.", e);
     }
+}
+
+public void deleteUser(int id) throws SQLException {
+
+        String sql = "DELETE FROM users WHERE id=?";
+
+        Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql);
+
+        stmt.setInt(1,id);
+
+        stmt.executeUpdate();
+}
+
 
 
     public   boolean  isEmailExist (String s) throws SQLException {

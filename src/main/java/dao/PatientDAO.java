@@ -8,15 +8,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class PatientDAO {
-    private UserDAO userDAO = new UserDAO();
-    public void registerPatient (Patient patient) throws SQLException {
-        int PatientID = userDAO.addUser(patient.getUser());
 
-        String sql = "INSERT INTO patients(patient_id,date_of_birth,gender,address,phone,emergency_contact_number,insuranceID,insurance_provider) VALUES = (?,?,?,?,?,?,?,?) ";
+    public void registerPatient (Patient patient) throws SQLException {
+
+
+        String sql = "INSERT INTO patients(patient_id,date_of_birth,gender,address,phone,emergency_contact_number,insuranceID,insurance_provider) VALUES  (?,?,?,?,?,?,?,?) ";
         Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql);
 
-        stmt.setInt(1,PatientID);
+        stmt.setInt(1,patient.getUser().getId());
         stmt.setString(2,patient.getDate_of_birth());
         stmt.setString(3,patient.getGender());
         stmt.setString(4,patient.getAddress());

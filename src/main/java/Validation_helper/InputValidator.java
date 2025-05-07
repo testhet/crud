@@ -42,22 +42,25 @@ public class InputValidator {
 //        }
 //    }
 
-    public static String getValidatedDate(String input) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");  // Adjust this to your desired format
-        try {
-            // Parse the date using the specified format
-            LocalDate parsedDate = LocalDate.parse(input, formatter);
+    public static String getValidatedDate(String prompt) {
+        Scanner scanner = new Scanner(System.in);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-            // Check if the parsed date is in the future
-            if (parsedDate.isAfter(LocalDate.now())) {
-                return input;  // Valid future date
-            } else {
-                System.out.println("The date must be in the future.");
-                return null;
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine();
+
+            try {
+                LocalDate parsedDate = LocalDate.parse(input, formatter);
+
+                if (parsedDate.isAfter(LocalDate.now())) {
+                    return input;  // Valid future date
+                } else {
+                    System.out.println("The date must be in the future.");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Please use yyyy-MM-dd (e.g. 2025-05-10).");
             }
-        } catch (Exception e) {
-            System.out.println("Invalid date format. Please use the correct format (yyyy-MM-dd).");
-            return null;  // Return null if invalid date
         }
     }
 
