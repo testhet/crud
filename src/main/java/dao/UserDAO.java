@@ -4,12 +4,9 @@ package dao;
 import config.DBconnection;
 import model.User;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-
 public class UserDAO {
 
-    public Map<Integer, String> addUser(User user) throws SQLException {
+    public int addUser(User user) throws SQLException {
         try (Connection connection = DBconnection.getConnection()){
 
         String sql = "INSERT INTO users ( email,user_name, password, role) VALUES (?, ?, ?, ?)";
@@ -24,12 +21,7 @@ public class UserDAO {
 
         ResultSet rs = stmt.getGeneratedKeys();
         if (rs.next()) {
-            int id = rs.getInt(1);
-            String role = user.getRole();
-            Map<Integer, String> result = new HashMap<>();
-            result.put(id, role);
-            return result;
-        
+            return rs.getInt(1);
         } else {
             throw new SQLException("Failed to retrieve user ID.");
         }
@@ -38,7 +30,7 @@ public class UserDAO {
     }
 }
 
-public void deleteUser(int id) throws SQLException {
+public User deleteUser(int id) throws SQLException {
 
         String sql = "DELETE FROM users WHERE id=?";
 
@@ -48,6 +40,7 @@ public void deleteUser(int id) throws SQLException {
         stmt.setInt(1,id);
 
         stmt.executeUpdate();
+    return null;
 }
 
 

@@ -7,22 +7,7 @@ public class User {
     private String password;
     private String role;
 
-    //to get data using id
-    public User(int id, String user_name, String email, String password, String role) {
-        this.id = id;
-        this.user_name = user_name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
 
-    //to add data in db
-    public User(String user_name, String email, String password, String role) {
-        this.user_name = user_name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
 
     public User() {
 

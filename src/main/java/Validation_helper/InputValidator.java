@@ -13,7 +13,6 @@ public class InputValidator {
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final List<String> validStatuses = Arrays.asList("SCHEDULED", "COMPLETED", "CANCELLED");
-    private static final List<String> validRoles = Arrays.asList("PATIENT", "DOCTOR");
     private static final List<String> validGender = Arrays.asList("MALE", "FEMALE", "OTHER");
 
     public static int getValidatedInt(String s) {
@@ -27,27 +26,13 @@ public class InputValidator {
         }
     }
 
-//    public static String getValidatedDate(String s) {
-//        while (true) {
-//            System.out.print(s);
-//            String input = scanner.nextLine().trim();
-//            try {
-//                LocalDate parsedDate = LocalDate.parse(input);
-//                if (parsedDate.isAfter(LocalDate.now())) {
-//                    return input;
-//                }
-//            } catch (DateTimeParseException e) {
-//                System.out.println("Invalid date format. Use YYYY-MM-DD.");
-//            }
-//        }
-//    }
 
-    public static String getValidatedDate(String prompt) {
+    public static String getValidatedDateFuture(String s) {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         while (true) {
-            System.out.print(prompt);
+            System.out.print(s);
             String input = scanner.nextLine();
 
             try {
@@ -57,6 +42,27 @@ public class InputValidator {
                     return input;  // Valid future date
                 } else {
                     System.out.println("The date must be in the future.");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Please use yyyy-MM-dd (e.g. 2025-05-10).");
+            }
+        }
+    }
+    public static String getValidatedDatePast(String s) {
+        Scanner scanner = new Scanner(System.in);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        while (true) {
+            System.out.print(s);
+            String input = scanner.nextLine();
+
+            try {
+                LocalDate parsedDate = LocalDate.parse(input, formatter);
+
+                if (parsedDate.isBefore(LocalDate.now())) {
+                    return input;
+                } else {
+                    System.out.println("The date must be from past");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid date format. Please use yyyy-MM-dd (e.g. 2025-05-10).");
@@ -89,17 +95,7 @@ public class InputValidator {
         }
     }
 
-    public static String getValidatedRole(String s) {
-        while (true) {
-            System.out.println(s);
-            String input = scanner.nextLine().trim();
-            if (validRoles.contains(input.toUpperCase())) {
-                return input;
-            } else {
-                System.out.println("Invalid Role. Choose From: Doctor & Patient");
-            }
-        }
-    }
+
 
     public static String getValidatedEmail(String s) {
         Scanner scanner = new Scanner(System.in);
@@ -183,12 +179,12 @@ public class InputValidator {
         }
     }
 
-    public static long getValidatedPhone(String prompt) {
+    public static long getValidatedPhone(String s) {
         Scanner scanner = new Scanner(System.in);
         String phonePattern = "^[0-9]{10}$";
 
         while (true) {
-            System.out.print(prompt);
+            System.out.print(s);
             String input = scanner.nextLine().trim();
 
             if (Pattern.matches(phonePattern, input)) {
@@ -214,5 +210,43 @@ public class InputValidator {
                 System.out.println("Invalid InsuranceID, Please Enter Correct ID Ex.R49835J4");
             }
         }
+    }
+
+    public static String getValidatedDepartment(String s) {
+
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+while (true){
+    try{
+        System.out.println(s);
+        System.out.println("1.Cardiology");
+        System.out.println("2.Neurology");
+        System.out.println("3.Orthopedics");
+        System.out.println("4.Pediatrics");
+        System.out.println("5.Dermatology");
+        choice = scanner.nextInt();
+        System.out.println();
+        switch (choice) {
+            case 1:
+                return "Cardiology";
+            case 2:
+                return "Neurology";
+            case 3:
+                return "Orthopedics";
+            case 4:
+                return "Pediatrics";
+            case 5:
+                return "Dermatology";
+            default:
+                System.out.println("Invalid Choice, Please select valid department number");
+                break;
+        }
+
+        } catch (Exception e) {
+        System.out.println("Invalid input. Please enter a number between 1 and 5.");
+        scanner.nextLine();
+            }
+    }
+
     }
 }

@@ -5,14 +5,13 @@ import Validation_helper.InputValidator;
 import model.User;
 
 import java.sql.SQLException;
-import java.util.Map;
 
 
 public class UserController {
 
     private UserDAO userDAO = new UserDAO();
 
-    public User addUser() throws SQLException {
+    public User addUser(String role) throws SQLException {
         User user = new User();
         String email = "";
 
@@ -35,12 +34,10 @@ public class UserController {
         user.setEmail(email);
         user.setUser_name(InputValidator.getValidatedName("Enter Your Full Name : "));
         user.setPassword(InputValidator.getValidatedPassword("Set Your Password : "));
-        user.setRole(InputValidator.getValidatedRole("Choose Role From: Doctor & Patient : "));
+        user.setRole(role);
 
-        Map<Integer, String> result = userDAO.addUser(user);
-        Map.Entry<Integer, String> entry = result.entrySet().iterator().next();
-        user.setId(entry.getKey());
-
+        int userId = userDAO.addUser(user);
+        user.setId(userId);
 
         return user;
     }

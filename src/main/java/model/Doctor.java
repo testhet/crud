@@ -1,17 +1,16 @@
 package model;
 
+import java.util.TimeZone;
+
 public class Doctor {
+
     private User user;
     private int doctor_id;
     private String specialization;
     private String department;
 
 
-    public Doctor(User user,int doctor_id, String specialization, String department) {
-        this.user = user;
-        this.doctor_id = doctor_id;
-        this.specialization = specialization;
-        this.department = department;
+    public Doctor() {
     }
 
 
@@ -42,4 +41,9 @@ public class Doctor {
     public void setDepartment(String department) {
         this.department = department;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
+

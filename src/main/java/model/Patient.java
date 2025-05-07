@@ -12,17 +12,6 @@ public class Patient {
     private String insuranceID;
     private String insurance_provider;
 
-    public Patient(User user,int patient_id, String date_of_birth, String gender, String address, int phone, int emergency_contact_number, String insuranceID, String insurance_provider) {
-        this.user = user;
-        this.patient_id = patient_id;
-        this.date_of_birth = date_of_birth;
-        this.gender = gender;
-        this.address = address;
-        this.phone = phone;
-        this.emergency_contact_number = emergency_contact_number;
-        this.insuranceID = insuranceID;
-        this.insurance_provider = insurance_provider;
-    }
 
     public Patient() {
 

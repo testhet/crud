@@ -10,28 +10,6 @@ public class Appointment {
     private String status;
     private String created_at;
 
-//    public Appointment(int id, int doctor_id, int patient_id, String appointment_date, String getAppointment_time, String reason, String status, String created_at) {
-//        this.id = id;
-//        this.doctor_id = doctor_id;
-//        this.patient_id = patient_id;
-//        this.appointment_date = appointment_date;
-//        this.getAppointment_time = getAppointment_time;
-//        this.reason = reason;
-//        this.status = status;
-//        this.created_at = created_at;
-//    }
-//    public Appointment(int doctor_id, int patient_id, String appointment_date, String getAppointment_time, String reason, String status, String created_at) {
-//
-//        this.doctor_id = doctor_id;
-//        this.patient_id = patient_id;
-//        this.appointment_date = appointment_date;
-//        this.getAppointment_time = getAppointment_time;
-//        this.reason = reason;
-//        this.status = status;
-//        this.created_at = created_at;
-//    }
-//    public Appointment() {
-//    }
     public int getId() {
         return id;
     }

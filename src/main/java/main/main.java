@@ -1,6 +1,7 @@
 package main;
 
 import controller.AppointmentController;
+import controller.DoctorController;
 import controller.PatientController;
 import controller.UserController;
 
@@ -10,10 +11,10 @@ import java.util.Scanner;
 public class main {
     public static void main(String[] args) throws SQLException {
 
-        PatientController controller = new PatientController();
+        DoctorController controller = new DoctorController();
         Scanner scanner = new Scanner(System.in);
 
-        controller.registerPatient();
+        controller.registerDoctor();
 
 //        AppointmentController controller = new AppointmentController();
 //        Scanner scanner = new Scanner(System.in);
