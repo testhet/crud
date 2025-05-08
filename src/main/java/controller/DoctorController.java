@@ -5,6 +5,7 @@ import dao.DoctorDAO;
 import model.Doctor;
 import model.User;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DoctorController {
@@ -38,12 +39,45 @@ public class DoctorController {
             controller.deleteUser(user);
         }
     }
+    public void viewAssociatedPatientController()throws SQLException{
+        ResultSet rs = doctorDAO.viewAssociatedPatient(currentUser.getId());
+        boolean found = false;
+        System.out.printf("%-5s %-15s %-12s %-8s %-20s %-12s %-15s%n",
+                "ID", "Name", "DOB", "Gender", "Address", "Phone", "InsuranceID");
+        System.out.println("-------------------------------------------------------------------------------");
+
+        while (rs.next()) {
+            found = true;
+            int patientId = rs.getInt("PatientID");
+            String name = rs.getString("PatientName");
+            String dob = rs.getString("DOB");
+            String gender = rs.getString("gender");
+            String address = rs.getString("address");
+            String phone = rs.getString("phone");
+            String insuranceID = rs.getString("insuranceID");
+
+            System.out.printf("%-5d %-15s %-12s %-8s %-20s %-12s %-15s%n",
+                    patientId, name, dob, gender, address, phone, insuranceID);
+        }
+
+        if (!found) {
+            System.out.println("No patients found associated with doctor ID: " + currentUser.getId());
+        }
+        rs.close();
+    }
+
+
 
     public void deletePatient()throws SQLException{
         if(currentUser.getRole().equalsIgnoreCase("doctor")){
-            int id = InputValidator.getValidatedInt("Enter Patient Id You Want Do Delete");
-            doctorDAO.deletePatient(id);
-            System.out.println("Successfully Deleted Patient With ID: "+ id);
+            viewAssociatedPatientController();
+            int id = InputValidator.getValidatedInt("Enter Patient Id You Want Do Delete: ");
+            String confirmation = "CONFIRM";
+            String cnfInput = InputValidator.getValidatedTextField("Write CONFIRM To Delete Patient \n Write Anything Else to go Back");
+            if(confirmation.equals(cnfInput)){
+                doctorDAO.deletePatient(id);
+                System.out.println("Successfully Deleted Patient With ID: "+ id);
+            }
         }else {
             System.out.println("Only Doctors can Delete patient.");
         }

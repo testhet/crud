@@ -46,7 +46,7 @@ public class PatientController {
         }
     }
 
-    public void updateUser()throws SQLException{
+    public void updatePatient()throws SQLException{
 
         String Address = InputValidator.getValidatedTextField("Enter New Address: ");
         long phone = InputValidator.getValidatedPhone("Enter New Phone Number: ");
@@ -54,7 +54,7 @@ public class PatientController {
         int id = currentUser.getId();
 
         patientDAO.updatePatientDetails(Address,phone,emergencyContact,id);
-        System.out.println("Successfully Updated User Profile!!!");
+        System.out.println("Successfully Updated Patient Profile!!!");
     }
 
 }
