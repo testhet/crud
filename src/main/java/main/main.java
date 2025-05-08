@@ -11,10 +11,10 @@ import java.util.Scanner;
 public class main {
     public static void main(String[] args) throws SQLException {
 
-        DoctorController controller = new DoctorController();
-        Scanner scanner = new Scanner(System.in);
-
-        controller.registerDoctor();
+//        DoctorController controller = new DoctorController();
+//        Scanner scanner = new Scanner(System.in);
+//
+//        controller.registerDoctor();
 
     }
 }

@@ -2,10 +2,10 @@ package controller;
 
 import dao.UserDAO;
 import Validation_helper.InputValidator;
-import jdk.nashorn.internal.ir.WhileNode;
+
 import model.User;
 
-import javax.jws.soap.SOAPBinding;
+
 import java.sql.SQLException;
 
 

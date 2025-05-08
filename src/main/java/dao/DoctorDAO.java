@@ -25,13 +25,14 @@ public class DoctorDAO {
 
     }
 
-    public  ResultSet viewAssociatedPatient(int id) throws SQLException {
-        String patientList =
-                "SELECT DISTINCT a.patient_id ,u.id AS PatientID, u.user_name AS PatientName, p.date_of_birth AS DOB , p.gender , p.address, p.phone ,p.insuranceID" +
-                " FROM users u " +
-                " JOIN patients p ON p.patient_id = u.id" +
-                " JOIN appointment a ON a.patient_id = p.patient_id"+
-                " WHERE a.doctor_id = ? ORDER BY u.id";
+    public ResultSet viewAssociatedPatient(int id) throws SQLException {
+        String patientList = """
+                SELECT DISTINCT a.patient_id ,u.id AS PatientID, u.user_name AS PatientName, p.date_of_birth AS DOB , p.gender , p.address, p.phone ,p.insuranceID
+                FROM users u
+                JOIN patients p ON p.patient_id = u.id
+                JOIN appointment a ON a.patient_id = p.patient_id
+                WHERE a.doctor_id = ? ORDER BY u.id
+                """;
 
         Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(patientList);
