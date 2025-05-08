@@ -4,6 +4,8 @@ package dao;
 import config.DBconnection;
 import model.User;
 import java.sql.*;
+import java.util.EnumMap;
+
 public class UserDAO {
 
     public int addUser(User user) throws SQLException {
@@ -30,7 +32,35 @@ public class UserDAO {
     }
 }
 
-public User deleteUser(int id) throws SQLException {
+    public User userLogin(String email , String password) throws SQLException {
+        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+
+        Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql);
+
+        stmt.setString(1 ,email);
+        stmt.setString(2,password);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if(rs.next()){
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setUser_name(rs.getString("user_name"));
+            user.setEmail(rs.getString("email"));
+            user.setRole(rs.getString("role"));
+
+
+            return user;
+        } else {
+
+            System.out.println("Invalid Email Or Password");
+
+        }
+        return null;
+    }
+
+public void deleteUser(int id) throws SQLException {
 
         String sql = "DELETE FROM users WHERE id=?";
 
@@ -40,9 +70,7 @@ public User deleteUser(int id) throws SQLException {
         stmt.setInt(1,id);
 
         stmt.executeUpdate();
-    return null;
 }
-
 
 
     public   boolean  isEmailExist (String s) throws SQLException {
@@ -54,35 +82,15 @@ public User deleteUser(int id) throws SQLException {
         return rs.next();
     }
 
-    public User userLogin(String email , String password){
-    String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+    public void updatePassword(String email, String password ) throws SQLException{
+        String sql = "UPDATE users SET password = ? WHERE email = ?";
+        Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql);
 
-        try(Connection conn = DBconnection.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)){
-
-            stmt.setString(1 ,email);
-            stmt.setString(2,password);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if(rs.next()){
-                    User user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setUser_name(rs.getString("user_name"));
-                    user.setEmail(rs.getString("email"));
-                    user.setRole(rs.getString("role"));
-
-
-             return user;
-            } else {
-
-                System.out.println("Invalid Email Or Password");
-
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error IN Login "+ e.getMessage());
-        }
-        return null;
+        stmt.setString(1,password);
+        stmt.setString(2, email);
+        stmt.executeUpdate();
     }
+
+
 }

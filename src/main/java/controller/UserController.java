@@ -2,8 +2,10 @@ package controller;
 
 import dao.UserDAO;
 import Validation_helper.InputValidator;
+import jdk.nashorn.internal.ir.WhileNode;
 import model.User;
 
+import javax.jws.soap.SOAPBinding;
 import java.sql.SQLException;
 
 
@@ -47,8 +49,39 @@ public class UserController {
         userDAO.deleteUser(id);
     }
 
+    public void updatePassword () throws SQLException{
+        String email = "";
+        String password="";
+        String cnfPassword="";
 
-    public void loginUserFromInput() {
+        while (true) {
+            System.out.println("Enter Email For Which You Want To Change Password: ");
+            email = InputValidator.getValidatedEmail(email);
+
+                        if(!userDAO.isEmailExist(email)){
+                            System.out.println("Email Does Not Exist, Please Enter Existing Email.");
+                            continue;
+                        }
+
+                        do {
+                            System.out.println("Enter New Password: ");
+                            password = InputValidator.getValidatedPassword(password);
+
+                            System.out.println("Enter Confirm Password: ");
+                            cnfPassword = InputValidator.getValidatedPassword(cnfPassword);
+
+                            if (!password.equals(cnfPassword)) {
+                                System.out.println("Passwords do not match. Please try again.");
+                            }
+                        } while (!password.equals(cnfPassword));
+
+                        userDAO.updatePassword(email,password);
+            System.out.println("Password updated successfully for Email: "+ email);
+
+        }
+    }
+
+    public void login() throws SQLException {
         String email = InputValidator.getValidatedEmail("Enter email: ");
         String password = InputValidator.getValidatedPassword("Enter Password: ");
 

@@ -2,6 +2,7 @@ package dao;
 
 import config.DBconnection;
 import model.Patient;
+import model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,6 +25,20 @@ public class PatientDAO {
         stmt.setLong(6,patient.getEmergency_contact_number());
         stmt.setString(7,patient.getInsuranceID());
         stmt.setString(8,patient.getInsurance_provider());
+
+        stmt.executeUpdate();
+
+    }
+
+    public void updatePatientDetails(String address, long phone , long emergencyContact , int patientID  )throws SQLException{
+        String sql = "UPDATE patients SET address = ?, phone = ? , emergency_contact_number = ? WHERE patient_id = ? ";
+        Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql);
+
+        stmt.setString(1, address);
+        stmt.setLong(2,phone);
+        stmt.setLong(3,emergencyContact);
+        stmt.setInt(4, patientID);
 
         stmt.executeUpdate();
 

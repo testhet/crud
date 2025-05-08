@@ -39,7 +39,7 @@ public class InputValidator {
                 LocalDate parsedDate = LocalDate.parse(input, formatter);
 
                 if (parsedDate.isAfter(LocalDate.now())) {
-                    return input;  // Valid future date
+                    return input;
                 } else {
                     System.out.println("The date must be in the future.");
                 }

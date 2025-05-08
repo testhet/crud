@@ -10,6 +10,11 @@ import java.sql.SQLException;
 public class DoctorController {
 
     private DoctorDAO doctorDAO = new DoctorDAO();
+    private User currentUser;
+
+    public DoctorController(User currentUser) {
+        this.currentUser = currentUser;
+    }
 
     public void registerDoctor() throws SQLException {
 
@@ -31,6 +36,16 @@ public class DoctorController {
         } catch (Exception e) {
             System.out.println("Error Registering Doctor!!");
             controller.deleteUser(user);
+        }
+    }
+
+    public void deletePatient()throws SQLException{
+        if(currentUser.getRole().equalsIgnoreCase("doctor")){
+            int id = InputValidator.getValidatedInt("Enter Patient Id You Want Do Delete");
+            doctorDAO.deletePatient(id);
+            System.out.println("Successfully Deleted Patient With ID: "+ id);
+        }else {
+            System.out.println("Only Doctors can Delete patient.");
         }
     }
 }
