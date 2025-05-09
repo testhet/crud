@@ -2,7 +2,6 @@ package dao;
 
 import config.DBconnection;
 import model.Doctor;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,6 +21,8 @@ public class DoctorDAO {
         stmt.setString(3, doctor.getDepartment());
         
         stmt.executeUpdate();
+        stmt.close();
+        connection.close();
 
     }
 
@@ -59,6 +60,7 @@ public class DoctorDAO {
             deleteUSerStmt.setInt(1,id);
             updateAppointmentStmt.setString(1,"Cancelled Due To User DELETED");
             connection.commit();
+
             System.out.println("Successfully Deleted Patient");
         }
     }

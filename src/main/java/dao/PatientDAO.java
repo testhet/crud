@@ -25,8 +25,9 @@ public class PatientDAO {
         stmt.setLong(6,patient.getEmergency_contact_number());
         stmt.setString(7,patient.getInsuranceID());
         stmt.setString(8,patient.getInsurance_provider());
-
         stmt.executeUpdate();
+        stmt.close();
+        connection.close();
 
     }
 
@@ -41,6 +42,8 @@ public class PatientDAO {
         stmt.setInt(4, patientID);
 
         stmt.executeUpdate();
+        stmt.close();
+        connection.close();
 
     }
 }

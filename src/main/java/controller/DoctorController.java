@@ -4,7 +4,6 @@ import Validation_helper.InputValidator;
 import dao.DoctorDAO;
 import model.Doctor;
 import model.User;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -12,13 +11,12 @@ public class DoctorController {
 
     private DoctorDAO doctorDAO = new DoctorDAO();
     private User currentUser;
-
     public DoctorController(User currentUser) {
         this.currentUser = currentUser;
     }
 
-    public void registerDoctor() throws SQLException {
 
+    public void registerDoctor() throws SQLException {
         UserController controller = new UserController();
         User user = controller.addUser("Doctor");
         try {
@@ -27,11 +25,9 @@ public class DoctorController {
                 return;
             }
             Doctor doctor = new Doctor();
-
             doctor.setUser(user);
             doctor.setSpecialization(InputValidator.getValidatedTextField("Enter Doctors's Specialization"));
             doctor.setDepartment(InputValidator.getValidatedDepartment("Select Department For Doctor"));
-
             doctorDAO.registerDoctor(doctor);
             System.out.println("Successfully Registered Doctor!!!");
         } catch (Exception e) {
@@ -39,13 +35,14 @@ public class DoctorController {
             controller.deleteUser(user);
         }
     }
+
+
     public void viewAssociatedPatientController()throws SQLException{
         ResultSet rs = doctorDAO.viewAssociatedPatient(currentUser.getId());
         boolean found = false;
         System.out.printf("%-5s %-15s %-12s %-8s %-20s %-12s %-15s%n",
-                "ID", "Name", "DOB", "Gender", "Address", "Phone", "InsuranceID");
+                "PatientID", "Name", "DOB", "Gender", "Address", "Phone", "InsuranceID");
         System.out.println("-------------------------------------------------------------------------------");
-
         while (rs.next()) {
             found = true;
             int patientId = rs.getInt("PatientID");
@@ -55,17 +52,14 @@ public class DoctorController {
             String address = rs.getString("address");
             String phone = rs.getString("phone");
             String insuranceID = rs.getString("insuranceID");
-
             System.out.printf("%-5d %-15s %-12s %-8s %-20s %-12s %-15s%n",
                     patientId, name, dob, gender, address, phone, insuranceID);
         }
-
         if (!found) {
             System.out.println("No patients found associated with doctor ID: " + currentUser.getId());
         }
         rs.close();
     }
-
 
 
     public void deletePatient()throws SQLException{
