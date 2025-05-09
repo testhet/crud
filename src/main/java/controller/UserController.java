@@ -36,10 +36,10 @@ public class UserController {
     }
 
     public void forgotPassword () throws SQLException{
-        String email = "";
+        String email ;
         String password="";
         String cnfPassword="";
-        String dob = "";
+        String dob ;
         while (true) {
             email = InputValidator.getValidatedEmail("Enter Email For Which You Want To Change Password : ");
             System.out.println();

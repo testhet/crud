@@ -18,13 +18,13 @@ public class AppointmentController {
 
 
     public void addAppointmentFromUser(User user) throws SQLException {
-        if (!currentUser.getRole().equalsIgnoreCase("patient")) {
+        if (!user.getRole().equalsIgnoreCase("patient")) {
             System.out.println("Only patients can schedule appointments.");
             return;
         }
         Appointment appointment = new Appointment();
         appointment.setDoctor_id(InputValidator.getValidatedInt("Enter doctor ID: "));
-        appointment.setPatient_id(currentUser.getId());
+        appointment.setPatient_id(user.getId());
         appointment.setAppointment_date(InputValidator.getValidatedDateFuture("Enter appointment date (YYYY-MM-DD): "));
         appointment.setAppointment_time(InputValidator.getValidatedTime("Enter appointment time (HH:MM:SS): "));
         appointment.setStatus("Scheduled");
@@ -35,12 +35,12 @@ public class AppointmentController {
 
 
     public void updateAppointmentStatus(User user) throws SQLException {
-        if (currentUser.getRole().equalsIgnoreCase("doctor")) {
+        if (user.getRole().equalsIgnoreCase("doctor")) {
             int appointmentId = InputValidator.getValidatedInt("Enter appointment ID to update: ");
             String newStatus = InputValidator.getValidatedStatus("Enter new status (Completed/Cancelled): ");
             appointmentDAO.updateAppointmentStatus(appointmentId, newStatus);
             System.out.println("Appointment status updated To :"+ newStatus);
-        } else if (currentUser.getRole().equalsIgnoreCase("patient")) {
+        } else if (user.getRole().equalsIgnoreCase("patient")) {
             int appointmentId = InputValidator.getValidatedInt("Enter appointment ID to update: ");
             String newStatus = "Cancelled";
             appointmentDAO.updateAppointmentStatus(appointmentId,newStatus);
@@ -50,7 +50,7 @@ public class AppointmentController {
 
 
     public void reScheduleAppointment(User user)throws SQLException{
-        if(!currentUser.getRole().equalsIgnoreCase("Patient")){
+        if(!user.getRole().equalsIgnoreCase("Patient")){
             System.out.println("Only Patient Can re-Schedule Appointment");
             return;
         }

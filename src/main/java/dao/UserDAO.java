@@ -79,7 +79,7 @@ public class UserDAO {
         connection.close();
     }
 
-    public boolean dobMatch(String dob, String email) throws  SQLException {
+    public boolean dobMatch(String email, String dob) throws  SQLException {
         String sql = """
                 SELECT
                     u.email,
@@ -90,8 +90,8 @@ public class UserDAO {
             """;
         Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setString(1,email);
-        stmt.setString(2,dob);
+        stmt.setString(1,email.trim());
+        stmt.setString(2,dob.trim());
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }

@@ -54,4 +54,8 @@ public class PatientController {
         System.out.println("Successfully Updated Patient Profile!!!");
     }
 
+    public void viewProfile(User user) throws SQLException{
+        patientDAO.viewProfile(user);
+    }
+
 }

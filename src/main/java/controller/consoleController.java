@@ -2,6 +2,7 @@ package controller;
 
 import model.User;
 
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -16,6 +17,10 @@ public class consoleController {
     Scanner scanner = new Scanner(System.in);
 
     public void startApp() throws SQLException {
+
+
+    int choice ;
+    do{
         System.out.println("""
                     
                     === Hospital Management System ===
@@ -26,10 +31,6 @@ public class consoleController {
                     5. Exit
                     
                     """);
-
-    int choice =0;
-    do{
-
         System.out.print("Enter your choice: ");
         while (!scanner.hasNextInt()) {
             System.out.println("Please enter a valid number.");
@@ -40,7 +41,7 @@ public class consoleController {
 
         switch (choice) {
             case 1:
-                handleLogin(scanner);
+                handleLogin();
                 break;
             case 2:
                 System.out.println("Doctor Registration");
@@ -63,18 +64,18 @@ public class consoleController {
     }
 
 
-    private void handleLogin(Scanner scanner) throws SQLException {
+    private void handleLogin() throws SQLException {
        currentUser = userController.login();
 
        if(currentUser.getRole().equalsIgnoreCase("doctor")){
            doctorMenu(currentUser);
        } else if (currentUser.getRole().equalsIgnoreCase("patient")) {
-
+            patientMenu(currentUser);
        }
     }
 
-    private void patientMenu() throws SQLException{
-        int choice = 0;
+    private void patientMenu(User currentUser) throws SQLException{
+        int choice ;
         do { System.out.println("""
                      Welcome To Patient Menu
                   ---------------------------------
@@ -85,9 +86,9 @@ public class consoleController {
                        5.Update Profile
                        6.Update Password
                        7.Logout
-                      
-                       
-                   """);
+                     \s
+                      \s
+                  \s""");
             System.out.print("Enter your choice: ");
             while (!scanner.hasNextInt()) {
                 System.out.println("Please enter a valid number.");
@@ -104,12 +105,15 @@ public class consoleController {
                     appointmentController.viewAppointments(currentUser);
                     continue;
                 case 3:
+                    appointmentController.viewAppointments(currentUser);
                     appointmentController.updateAppointmentStatus(currentUser);
                     continue;
                 case 4:
+                    appointmentController.viewAppointments(currentUser);
                     appointmentController.reScheduleAppointment(currentUser);
                     continue;
                 case 5:
+                    patientController.viewProfile(currentUser);
                     patientController.updatePatient(currentUser);
                     continue;
                 case 6:
@@ -127,7 +131,9 @@ public class consoleController {
     }
 
     private void doctorMenu(User currentUser) throws SQLException {
-        System.out.println("""
+
+        int choice = 0;
+        do{ System.out.println("""
                    Welcome to Doctor Menu
                   ------------------------
                        1.View Appointments
@@ -137,8 +143,6 @@ public class consoleController {
                        5.Update Password
                    
                    """);
-        int choice = 0;
-        do{
 
             System.out.print("Enter your choice: ");
             while (!scanner.hasNextInt()) {
@@ -154,11 +158,9 @@ public class consoleController {
                     break;
                 case 2:
                     doctorController.viewAssociatedPatientController(this.currentUser);
-
                     break;
                 case 3:
                     doctorController.deletePatient(this.currentUser);
-
                     break;
                 case 4:
                     System.out.println("Logging Out.....");

@@ -1,9 +1,6 @@
 package main;
 
-import controller.PatientController;
 import controller.consoleController;
-import model.User;
-
 import java.sql.SQLException;
 
 public class main {

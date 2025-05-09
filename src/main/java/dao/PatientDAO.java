@@ -6,6 +6,7 @@ import model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PatientDAO {
@@ -29,6 +30,43 @@ public class PatientDAO {
         stmt.close();
         connection.close();
 
+    }
+
+    public void viewProfile(User user) throws SQLException{
+        String sql = """
+                SELECT
+                    u.id AS PatientID,
+                    u.email AS Email,
+                    u.user_name AS "Patient Name",
+                    p.date_of_birth AS DOB,
+                    p.address AS Address,
+                    p.phone AS Phone,
+                    p.emergency_contact_number AS "Emergency Contact Number",
+                    p.insuranceID AS "Insurance ID",
+                    p.insurance_provider AS "Insurance Provider"
+                FROM users u
+                JOIN patients p ON p.patient_id = u.id
+                WHERE id = ? ;
+                """;
+        Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setInt(1,user.getId());
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                System.out.println("Patient ID: " + rs.getInt("PatientID"));
+                System.out.println("Email: " + rs.getString("Email"));
+                System.out.println("Patient Name: " + rs.getString("Patient Name"));
+                System.out.println("Date of Birth: " + rs.getDate("DOB"));
+                System.out.println("Address: " + rs.getString("Address"));
+                System.out.println("Phone: " + rs.getString("Phone"));
+                System.out.println("Emergency Contact Number: " + rs.getString("Emergency Contact Number"));
+                System.out.println("Insurance ID: " + rs.getString("Insurance ID"));
+                System.out.println("Insurance Provider: " + rs.getString("Insurance Provider"));
+            }
+        }
+        stmt.close();
+        connection.close();
     }
 
     public void updatePatientDetails(String address, long phone , long emergencyContact , int patientID  )throws SQLException{
