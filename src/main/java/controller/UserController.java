@@ -14,7 +14,7 @@ public class UserController {
         User user = new User();
         String email = "";
         while (true) {
-            email = InputValidator.getValidatedEmail("Enter Email : ");
+            email = InputValidator.getValidatedEmail("Enter Email With You Want to Sign-up : ");
             try {
                 if (userDAO.isEmailExist(email)) {
                     System.out.println("Email already exists. Please enter a different one.");
@@ -34,13 +34,6 @@ public class UserController {
         user.setId(userId);
         return user;
     }
-
-
-    public void deleteUser(User user) throws SQLException {
-        int id = InputValidator.getValidatedInt("");
-        userDAO.deleteUser(id);
-    }
-
 
     public void forgotPassword () throws SQLException{
         String email = "";

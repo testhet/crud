@@ -17,7 +17,7 @@ public class AppointmentController {
     }
 
 
-    public void addAppointmentFromUser() throws SQLException {
+    public void addAppointmentFromUser(User user) throws SQLException {
         if (!currentUser.getRole().equalsIgnoreCase("patient")) {
             System.out.println("Only patients can schedule appointments.");
             return;
@@ -34,7 +34,7 @@ public class AppointmentController {
     }
 
 
-    public void updateAppointmentStatus() throws SQLException {
+    public void updateAppointmentStatus(User user) throws SQLException {
         if (currentUser.getRole().equalsIgnoreCase("doctor")) {
             int appointmentId = InputValidator.getValidatedInt("Enter appointment ID to update: ");
             String newStatus = InputValidator.getValidatedStatus("Enter new status (Completed/Cancelled): ");
@@ -49,7 +49,7 @@ public class AppointmentController {
     }
 
 
-    public void reScheduleAppointment()throws SQLException{
+    public void reScheduleAppointment(User user)throws SQLException{
         if(!currentUser.getRole().equalsIgnoreCase("Patient")){
             System.out.println("Only Patient Can re-Schedule Appointment");
             return;
@@ -64,14 +64,13 @@ public class AppointmentController {
 
 
 
-    public void viewAppointments() throws SQLException {
-        if (currentUser.getRole().equalsIgnoreCase("doctor")) {
-         ResultSet rs =  appointmentDAO.getAppointmentList(currentUser);
-         boolean found = false;
+    public void viewAppointments(User user) throws SQLException {
+        if (user.getRole().equalsIgnoreCase("doctor")) {
+         ResultSet rs =  appointmentDAO.getAppointmentList(user);
             System.out.printf("%-3s %-3s %-15s %-8s %-12s %-12s %-10s %-12s%n","AppointmentID", "PatientID","PatientName","Gender","Phone","AppointmentDate","AppointmentTime", "Status");
             System.out.println("-----------------------------------------------------------------------------------------");
             while (rs.next()){
-                found = true;
+
                 int appointmentID = rs.getInt("AppointmentID");
                 int patientID = rs.getInt("PatientID");
                 String PatientName = rs.getString("PatientName");
@@ -81,12 +80,9 @@ public class AppointmentController {
                 Time time =  rs.getTime("Time");
                 String status = rs.getString("Appointment Status");
                 System.out.printf("%-3s %-3s %-15s %-8s %-12s %-12s %-10s %-12s%n",appointmentID,patientID,PatientName,Gender,Phone,date,time,status);
-                if(!found){
-                    System.out.println("No Appointment Found Associated with doctor");
-                }
             }
-        } else if (currentUser.getRole().equalsIgnoreCase("patient")) {
-            ResultSet rs = appointmentDAO.getAppointmentList(currentUser);
+        } else if (user.getRole().equalsIgnoreCase("patient")) {
+            ResultSet rs = appointmentDAO.getAppointmentList(user);
             boolean found = false;
             System.out.printf("%-3s %-3s %-15s %-12s %-12s %-10s %-12s%n", "AppointmentID", "PatientID", "DoctortName", "Departmetn",  "AppointmentDate", "AppointmentTime", "Status");
             System.out.println("-----------------------------------------------------------------------------------------");
@@ -103,7 +99,7 @@ public class AppointmentController {
             }
         }
             else {
-            System.out.println("Only DOctor and Patient Can view Appointment");
+            System.out.println("Only Doctor and Patient Can view Appointment");
         }
     }
 

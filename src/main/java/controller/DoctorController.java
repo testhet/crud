@@ -2,6 +2,7 @@ package controller;
 
 import Validation_helper.InputValidator;
 import dao.DoctorDAO;
+import dao.UserDAO;
 import model.Doctor;
 import model.User;
 import java.sql.ResultSet;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 public class DoctorController {
 
     private DoctorDAO doctorDAO = new DoctorDAO();
+    private UserDAO userDAO  = new UserDAO();
     private User currentUser;
     public DoctorController(User currentUser) {
         this.currentUser = currentUser;
@@ -32,12 +34,13 @@ public class DoctorController {
             System.out.println("Successfully Registered Doctor!!!");
         } catch (Exception e) {
             System.out.println("Error Registering Doctor!!");
-            controller.deleteUser(user);
+            assert user != null;
+            userDAO.deleteUser(user.getId());
         }
     }
 
 
-    public void viewAssociatedPatientController()throws SQLException{
+    public void viewAssociatedPatientController(User user)throws SQLException{
         ResultSet rs = doctorDAO.viewAssociatedPatient(currentUser.getId());
         boolean found = false;
         System.out.printf("%-5s %-15s %-12s %-8s %-20s %-12s %-15s%n",
@@ -62,9 +65,9 @@ public class DoctorController {
     }
 
 
-    public void deletePatient()throws SQLException{
+    public void deletePatient(User user)throws SQLException{
         if(currentUser.getRole().equalsIgnoreCase("doctor")){
-            viewAssociatedPatientController();
+            viewAssociatedPatientController(user);
             int id = InputValidator.getValidatedInt("Enter Patient Id You Want Do Delete: ");
             String confirmation = "CONFIRM";
             String cnfInput = InputValidator.getValidatedTextField("Write CONFIRM To Delete Patient \n Write Anything Else to go Back");

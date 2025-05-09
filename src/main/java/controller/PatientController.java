@@ -2,6 +2,7 @@ package controller;
 
 import Validation_helper.InputValidator;
 import dao.PatientDAO;
+import dao.UserDAO;
 import model.Patient;
 import model.User;
 import java.sql.SQLException;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 public class PatientController {
 
     private PatientDAO patientDAO = new PatientDAO();
+    private  UserDAO userDAO = new UserDAO();
     private User currentUser;
     public PatientController(User currentUser) {
         this.currentUser = currentUser;
@@ -26,8 +28,8 @@ public class PatientController {
         }
     Patient patient = new Patient();
     patient.setUser(user);
-    patient.setDate_of_birth(InputValidator.getValidatedDatePast("Enter DOB : "));
-    patient.setGender(InputValidator.getValidatedGender("Enter Gender of Patient : "));
+    patient.setDate_of_birth(InputValidator.getValidatedDatePast("Enter DOB(YYYY-MM-DD) : "));
+    patient.setGender(InputValidator.getValidatedGender("Enter Gender of Patient(Male/Female/Other) : "));
     patient.setAddress(InputValidator.getValidatedTextField("Enter Address : "));
     patient.setPhone(InputValidator.getValidatedPhone("Enter Patient's Phone Number : "));
     patient.setEmergency_contact_number(InputValidator.getValidatedPhone("Enter Emergency Contact Number : "));
@@ -37,12 +39,13 @@ public class PatientController {
     System.out.println("Patient Registered Successfully");
         } catch (Exception e) {
     System.out.println("Error Registering patient");
-    userController.deleteUser(user);
+            assert user != null;
+            userDAO.deleteUser(user.getId());
         }
     }
 
 
-    public void updatePatient()throws SQLException{
+    public void updatePatient(User user)throws SQLException{
         String Address = InputValidator.getValidatedTextField("Enter New Address: ");
         long phone = InputValidator.getValidatedPhone("Enter New Phone Number: ");
         long emergencyContact = InputValidator.getValidatedPhone("Enter New Emergency Contact number: ");
