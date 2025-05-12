@@ -15,21 +15,19 @@ public class PatientDAO {
 
 
         String sql = "INSERT INTO patients(patient_id,date_of_birth,gender,address,phone,emergency_contact_number,insuranceID,insurance_provider) VALUES  (?,?,?,?,?,?,?,?) ";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
+       try( Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-        stmt.setInt(1,patient.getUser().getId());
-        stmt.setString(2,patient.getDate_of_birth());
-        stmt.setString(3,patient.getGender());
-        stmt.setString(4,patient.getAddress());
-        stmt.setLong(5,patient.getPhone());
-        stmt.setLong(6,patient.getEmergency_contact_number());
-        stmt.setString(7,patient.getInsuranceID());
-        stmt.setString(8,patient.getInsurance_provider());
-        stmt.executeUpdate();
-        stmt.close();
-        connection.close();
-
+           stmt.setInt(1, patient.getUser().getId());
+           stmt.setString(2, patient.getDate_of_birth());
+           stmt.setString(3, patient.getGender());
+           stmt.setString(4, patient.getAddress());
+           stmt.setLong(5, patient.getPhone());
+           stmt.setLong(6, patient.getEmergency_contact_number());
+           stmt.setString(7, patient.getInsuranceID());
+           stmt.setString(8, patient.getInsurance_provider());
+           stmt.executeUpdate();
+       }
     }
 
     public void viewProfile(User user) throws SQLException{
@@ -48,12 +46,12 @@ public class PatientDAO {
                 JOIN patients p ON p.patient_id = u.id
                 WHERE id = ? ;
                 """;
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setInt(1,user.getId());
+       try(Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)) {
+           stmt.setInt(1, user.getId());
 
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
+           try (ResultSet rs = stmt.executeQuery()) {
+               if (rs.next()) {
 //                System.out.printf("%-28s%s%n", "Patient ID:", rs.getInt("PatientID"));
 //                System.out.printf("%-28s%s%n", "Email:", rs.getString("Email"));
 //                System.out.printf("%-28s%s%n", "Patient Name:", rs.getString("Patient Name"));
@@ -63,74 +61,68 @@ public class PatientDAO {
 //                System.out.printf("%-28s%s%n", "Emergency Contact Number:", rs.getString("Emergency Contact Number"));
 //                System.out.printf("%-28s%s%n", "Insurance ID:", rs.getString("Insurance ID"));
 //                System.out.printf("%-28s%s%n", "Insurance Provider:", rs.getString("Insurance Provider"));
-                String line = "+-----------------------------+------------------------------+";
+                   String line = "+-----------------------------+------------------------------+";
 
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Field", "Value");
-                System.out.println(line);
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Field", "Value");
+                   System.out.println(line);
 
-                System.out.printf("| %-27s | %-28s |%n", "Patient ID", rs.getInt("PatientID"));
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Email", rs.getString("Email"));
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Patient Name", rs.getString("Patient Name"));
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Date of Birth", rs.getDate("DOB"));
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Address", rs.getString("Address"));
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Phone", rs.getString("Phone"));
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Emergency Contact Number", rs.getString("Emergency Contact Number"));
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Insurance ID", rs.getString("Insurance ID"));
-                System.out.println(line);
-                System.out.printf("| %-27s | %-28s |%n", "Insurance Provider", rs.getString("Insurance Provider"));
-                System.out.println(line);
-
-            }
-        }
-        stmt.close();
-        connection.close();
+                   System.out.printf("| %-27s | %-28s |%n", "Patient ID", rs.getInt("PatientID"));
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Email", rs.getString("Email"));
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Patient Name", rs.getString("Patient Name"));
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Date of Birth", rs.getDate("DOB"));
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Address", rs.getString("Address"));
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Phone", rs.getString("Phone"));
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Emergency Contact Number", rs.getString("Emergency Contact Number"));
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Insurance ID", rs.getString("Insurance ID"));
+                   System.out.println(line);
+                   System.out.printf("| %-27s | %-28s |%n", "Insurance Provider", rs.getString("Insurance Provider"));
+                   System.out.println(line);
+               }
+           }
+       }
     }
 
 
     public boolean phoneExist(long  s) throws SQLException{
         String sql = "SELECT * FROM patients WHERE phone = ?";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setLong(1, s);
-        ResultSet rs = stmt.executeQuery();
-        stmt.close();
-        connection.close();
-        return rs.next();
+        try(Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, s);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
     }
 
     public boolean insuranceIDExist(String s) throws SQLException{
         String sql = "SELECT * FROM patients WHERE insuranceID = ?";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
+        try(Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)){
         stmt.setString(1,s);
         ResultSet rs = stmt.executeQuery();
-        stmt.close();
-        connection.close();
         return rs.next();
+        }
     }
 
 
-    public void updatePatientDetails(String address, long phone , long emergencyContact , int patientID  )throws SQLException{
+    public void updatePatientDetails(String address, long phone , long emergencyContact , int patientID  )throws SQLException {
         String sql = "UPDATE patients SET address = ?, phone = ? , emergency_contact_number = ? WHERE patient_id = ? ";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = DBconnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-        stmt.setString(1, address);
-        stmt.setLong(2,phone);
-        stmt.setLong(3,emergencyContact);
-        stmt.setInt(4, patientID);
+            stmt.setString(1, address);
+            stmt.setLong(2, phone);
+            stmt.setLong(3, emergencyContact);
+            stmt.setInt(4, patientID);
 
-        stmt.executeUpdate();
-        stmt.close();
-        connection.close();
-
+            stmt.executeUpdate();
+        }
     }
 }

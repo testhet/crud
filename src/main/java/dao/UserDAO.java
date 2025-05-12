@@ -51,64 +51,61 @@ public class UserDAO {
 
     public void deleteUser(int id) throws SQLException {
         String sql = "DELETE FROM users WHERE id=?";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
+        try(Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)){
         stmt.setInt(1, id);
         stmt.executeUpdate();
-        stmt.close();
-        connection.close();
+        }
     }
 
     public boolean isDoctor(String s) throws SQLException {
         String sql = "SELECT * FROM users WHERE email = ? && role =\"doctor\";";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
+        try(Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)){
         stmt.setString(1, s.trim());
         ResultSet rs = stmt.executeQuery();
-        stmt.close();
-        connection.close();
         return rs.next();
+        }
     }
 
     public boolean isEmailExist(String s) throws SQLException {
         String sql = "SELECT * FROM users WHERE email = ?;";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setString(1, s.trim());
-        ResultSet rs = stmt.executeQuery();
-        stmt.close();
-        connection.close();
-        return rs.next();
+        try(Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, s.trim());
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
     }
 
     public void updatePassword(String email, String password) throws SQLException {
         String sql = "UPDATE users SET password = ? WHERE email = ?";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)){
         stmt.setString(1, password);
         stmt.setString(2, email);
         stmt.executeUpdate();
-        stmt.close();
-        connection.close();
+        }
     }
 
     public boolean dobMatch(String email, String dob) throws  SQLException {
         String sql = """
-                SELECT
-                    u.email,
-                    p.date_of_birth
-                FROM users u
-                JOIN patients p ON p.patient_id = u.id
-                WHERE  u.email = ? && p.date_of_birth = ?;
-            """;
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setString(1,email.trim());
-        stmt.setString(2,dob.trim());
-        ResultSet rs = stmt.executeQuery();
-        stmt.close();
-        connection.close();
-        return rs.next();
+                    SELECT
+                        u.email,
+                        p.date_of_birth
+                    FROM users u
+                    JOIN patients p ON p.patient_id = u.id
+                    WHERE  u.email = ? && p.date_of_birth = ?;
+                """;
+        try (Connection connection = DBconnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email.trim());
+            stmt.setString(2, dob.trim());
+            ResultSet rs = stmt.executeQuery();
+            stmt.close();
+            connection.close();
+            return rs.next();
+        }
     }
 }
 

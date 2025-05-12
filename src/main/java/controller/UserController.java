@@ -6,6 +6,7 @@ import model.User;
 import java.sql.SQLException;
 
 
+
 public class UserController {
     private UserDAO userDAO = new UserDAO();
 
@@ -76,9 +77,20 @@ public class UserController {
 
 
 
-    public User login() {
+    public User login() throws SQLException {
         User user = null;
-        String email = InputValidator.getValidatedEmail("Enter email: ");
+        String email;
+        boolean emailExist;
+        do {
+            email = InputValidator.getValidatedEmail("Enter Email : ");
+            emailExist = userDAO.isEmailExist(email);
+            if (!emailExist) {
+                System.out.println("User With Provided Email Does Not Exist");
+            }
+        } while (!emailExist) ;
+
+
+
         while (user == null) {
             String password = InputValidator.getValidatedPassword("Enter Password: ");
             try {
