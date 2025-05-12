@@ -22,7 +22,7 @@ public class DBconnection {
             config.setJdbcUrl(properties.getProperty("db.url"));
             config.setUsername(properties.getProperty("db.username"));
             config.setPassword(properties.getProperty("db.password"));
-            config.setMaximumPoolSize(1);
+            config.setMaximumPoolSize(3);
             config.setMaxLifetime(600000);
             config.setConnectionTimeout(5000);
 

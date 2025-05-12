@@ -29,7 +29,7 @@ public class UserDAO {
     }
 
     public User userLogin(String email, String password) throws SQLException {
-        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE email = ? AND BINARY password = ?";
        try( Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)){
         stmt.setString(1, email);
@@ -41,9 +41,7 @@ public class UserDAO {
             user.setUser_name(rs.getString("user_name"));
             user.setEmail(rs.getString("email"));
             user.setRole(rs.getString("role"));
-
             return user;
-
        }
         return null;
         }

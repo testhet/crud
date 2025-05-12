@@ -1,5 +1,6 @@
 package Validation_helper;
 
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -249,4 +250,20 @@ while (true){
     }
 
     }
+
+//    public static String getValidatedYN(String s) {
+//        Scanner scanner = new Scanner(System.in);
+//        String textPattern = "[YN]";
+//
+//        while (true) {
+//            System.out.print(s);
+//            String input = scanner.nextLine().trim();
+//
+//            if (Pattern.matches(textPattern, input)) {
+//                return input;
+//            } else {
+//                System.out.println("Choose Between Y & N");
+//            }
+//        }
+//    }
 }

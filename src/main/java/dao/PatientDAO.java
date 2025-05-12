@@ -2,8 +2,6 @@ package dao;
 
 import config.DBconnection;
 import model.Patient;
-import model.User;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +28,7 @@ public class PatientDAO {
        }
     }
 
-    public void viewProfile(User user) throws SQLException{
+    public boolean viewProfile(int i) throws SQLException{
         String sql = """
                 SELECT
                     u.id AS PatientID,
@@ -48,46 +46,25 @@ public class PatientDAO {
                 """;
        try(Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
-           stmt.setInt(1, user.getId());
+           stmt.setInt(1, i);
 
            try (ResultSet rs = stmt.executeQuery()) {
                if (rs.next()) {
-//                System.out.printf("%-28s%s%n", "Patient ID:", rs.getInt("PatientID"));
-//                System.out.printf("%-28s%s%n", "Email:", rs.getString("Email"));
-//                System.out.printf("%-28s%s%n", "Patient Name:", rs.getString("Patient Name"));
-//                System.out.printf("%-28s%s%n", "Date of Birth:", rs.getDate("DOB"));
-//                System.out.printf("%-28s%s%n", "Address:", rs.getString("Address"));
-//                System.out.printf("%-28s%s%n", "Phone:", rs.getString("Phone"));
-//                System.out.printf("%-28s%s%n", "Emergency Contact Number:", rs.getString("Emergency Contact Number"));
-//                System.out.printf("%-28s%s%n", "Insurance ID:", rs.getString("Insurance ID"));
-//                System.out.printf("%-28s%s%n", "Insurance Provider:", rs.getString("Insurance Provider"));
-                   String line = "+-----------------------------+------------------------------+";
-
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Field", "Value");
-                   System.out.println(line);
-
-                   System.out.printf("| %-27s | %-28s |%n", "Patient ID", rs.getInt("PatientID"));
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Email", rs.getString("Email"));
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Patient Name", rs.getString("Patient Name"));
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Date of Birth", rs.getDate("DOB"));
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Address", rs.getString("Address"));
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Phone", rs.getString("Phone"));
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Emergency Contact Number", rs.getString("Emergency Contact Number"));
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Insurance ID", rs.getString("Insurance ID"));
-                   System.out.println(line);
-                   System.out.printf("| %-27s | %-28s |%n", "Insurance Provider", rs.getString("Insurance Provider"));
-                   System.out.println(line);
+                System.out.printf("%-28s%s%n", "Patient ID:", rs.getInt("PatientID"));
+                System.out.printf("%-28s%s%n", "Email:", rs.getString("Email"));
+                System.out.printf("%-28s%s%n", "Patient Name:", rs.getString("Patient Name"));
+                System.out.printf("%-28s%s%n", "Date of Birth:", rs.getDate("DOB"));
+                System.out.printf("%-28s%s%n", "Address:", rs.getString("Address"));
+                System.out.printf("%-28s%s%n", "Phone:", rs.getString("Phone"));
+                System.out.printf("%-28s%s%n", "Emergency Contact Number:", rs.getString("Emergency Contact Number"));
+                System.out.printf("%-28s%s%n", "Insurance ID:", rs.getString("Insurance ID"));
+                System.out.printf("%-28s%s%n", "Insurance Provider:", rs.getString("Insurance Provider"));
+               } else {
+                   return false;
                }
            }
        }
+       return true;
     }
 
 
@@ -116,12 +93,10 @@ public class PatientDAO {
         String sql = "UPDATE patients SET address = ?, phone = ? , emergency_contact_number = ? WHERE patient_id = ? ";
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
-
             stmt.setString(1, address);
             stmt.setLong(2, phone);
             stmt.setLong(3, emergencyContact);
             stmt.setInt(4, patientID);
-
             stmt.executeUpdate();
         }
     }

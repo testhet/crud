@@ -97,10 +97,12 @@ public class consoleController {
 
             switch (choice) {
                 case 1:
+                    assert currentUser!= null;
                     patientController.viewProfile(currentUser);
                     continue;
                 case 2:
                     assert currentUser != null;
+                    doctorController.doctorsProfile();
                     appointmentController.addAppointmentFromUser(currentUser);
                     continue;
                 case 3:
@@ -118,8 +120,8 @@ public class consoleController {
                     appointmentController.reScheduleAppointment(currentUser);
                     continue;
                 case 6:
-                    patientController.viewProfile(currentUser);
                     assert currentUser != null;
+                    patientController.viewProfile(currentUser);
                     patientController.updatePatient(currentUser);
                     continue;
                 case 7:

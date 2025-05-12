@@ -2,16 +2,17 @@ package controller;
 
 import Validation_helper.InputValidator;
 import dao.DoctorDAO;
+import dao.PatientDAO;
 import dao.UserDAO;
 import model.Doctor;
 import model.User;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DoctorController {
 
     private DoctorDAO doctorDAO = new DoctorDAO();
     private UserDAO userDAO  = new UserDAO();
+    private PatientDAO patientDAO = new PatientDAO();
 
 
 
@@ -36,42 +37,36 @@ public class DoctorController {
         }
     }
 
+    public void doctorsProfile() throws SQLException {
+          doctorDAO.doctorsProfile();
+    }
+
 
     public void viewAssociatedPatientController(User user)throws SQLException{
-        ResultSet rs = doctorDAO.viewAssociatedPatient(user.getId());
-        boolean found = false;
-        System.out.printf("%-5s %-15s %-12s %-8s %-20s %-12s %-15s%n",
-                "PatientID", "Name", "DOB", "Gender", "Address", "Phone", "InsuranceID");
-        System.out.println("-------------------------------------------------------------------------------");
-        while (rs.next()) {
-            found = true;
-            int patientId = rs.getInt("PatientID");
-            String name = rs.getString("PatientName");
-            String dob = rs.getString("DOB");
-            String gender = rs.getString("gender");
-            String address = rs.getString("address");
-            String phone = rs.getString("phone");
-            String insuranceID = rs.getString("insuranceID");
-            System.out.printf("%-5d %-15s %-12s %-8s %-20s %-12s %-15s%n",
-                    patientId, name, dob, gender, address, phone, insuranceID);
-        }
-        if (!found) {
-            System.out.println("No patients found associated with doctor ID: " + user.getId());
-        }
-        rs.close();
+       doctorDAO.viewAssociatedPatient(user.getId());
     }
 
 
     public void deletePatient(User user)throws SQLException{
-        if(user.getRole().equalsIgnoreCase("doctor")){
-            viewAssociatedPatientController(user);
-            int id = InputValidator.getValidatedInt("Enter Patient Id You Want Do Delete: ");
-            String confirmation = "CONFIRM";
-            String cnfInput = InputValidator.getValidatedTextField("Write CONFIRM To Delete Patient \n Write Anything Else to go Back");
-            if(confirmation.equals(cnfInput)){
-                doctorDAO.deletePatient(id);
-                System.out.println("Successfully Deleted Patient With ID: "+ id);
-            }
+        if(user.getRole().equalsIgnoreCase("doctor")) {
+            int id;
+            do {
+                viewAssociatedPatientController(user);
+                id = InputValidator.getValidatedInt("Enter Patient Id You Want Do Delete: \n To Exit Enter 0 :");
+                if(id == 0){
+                    break;
+                }
+                if (patientDAO.viewProfile(id)) {
+                    String confirmation = "CONFIRM";
+                    String cnfInput = InputValidator.getValidatedTextField(" --> Write CONFIRM To Delete Patient \n --> Write Anything Else to go Back : ");
+                    if (confirmation.equals(cnfInput)) {
+                        doctorDAO.deletePatient(id);
+                        System.out.println("Successfully Deleted Patient With ID: " + id);
+                    }
+                }else {
+                    System.out.println("Enter Valid Patient Id From the Above list");
+                }
+            } while (!patientDAO.viewProfile(id));
         }else {
             System.out.println("Only Doctors can Delete patient.");
         }

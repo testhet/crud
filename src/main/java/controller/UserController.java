@@ -89,8 +89,6 @@ public class UserController {
             }
         } while (!emailExist) ;
 
-
-
         while (user == null) {
             String password = InputValidator.getValidatedPassword("Enter Password: ");
             try {

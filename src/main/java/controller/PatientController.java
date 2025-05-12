@@ -71,7 +71,6 @@ public class PatientController {
     }
 
     public void viewProfile(User user) throws SQLException{
-        patientDAO.viewProfile(user);
+        patientDAO.viewProfile(user.getId());
     }
-
 }
