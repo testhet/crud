@@ -100,7 +100,7 @@ public class InputValidator {
 
     public static String getValidatedEmail(String s) {
         Scanner scanner = new Scanner(System.in);
-        String emailPattern = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+\\.[a-zA-Z]{2,5}$";
+        String emailPattern = "^[a-zA-Z]+[0-9_.-]*@[a-zA-Z]+[0-9_.-]*\\.[a-zA-Z]{2,5}$";
 
         while (true) {
             System.out.print(s);

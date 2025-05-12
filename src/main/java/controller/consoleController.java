@@ -45,14 +45,14 @@ public class consoleController {
             case 2:
                 System.out.println("Doctor Registration");
                 doctorController.registerDoctor();
-                break;
+                continue;
             case 3:
                 System.out.println("Patient Registration");
                 patientController.registerPatient();
-                break;
+                continue;
             case 4:
                 userController.forgotPassword();
-                break;
+                continue;
             case 5:
                 System.out.println("Exiting system. Goodbye!");
                 break;
@@ -161,13 +161,13 @@ public class consoleController {
             switch (choice) {
                 case 1:
                     appointmentController.viewAppointments(currentUser);
-                    break;
+                    continue;
                 case 2:
                     doctorController.viewAssociatedPatientController(currentUser);
-                    break;
+                    continue;
                 case 3:
                     doctorController.deletePatient(currentUser);
-                    break;
+                    continue;
                 case 4:
                     System.out.println("Logging Out.....");
                     currentUser = null;

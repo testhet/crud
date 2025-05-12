@@ -15,22 +15,28 @@ public class AppointmentController {
             System.out.println("Only patients can schedule appointments.");
             return;
         }
+        while (true){
         Appointment appointment = new Appointment();
-        appointment.setDoctor_id(InputValidator.getValidatedInt("Enter doctor ID: "));
-        appointment.setPatient_id(user.getId());
+        int id = InputValidator.getValidatedInt("Enter doctor ID: (OR Enter 0 to Exit) ");
+        if(id == 0){
+            break;
+        }
+            appointment.setDoctor_id(id);
+            appointment.setPatient_id(user.getId());
         appointment.setAppointment_date(InputValidator.getValidatedDateFuture("Enter appointment date (YYYY-MM-DD): "));
         appointment.setAppointment_time(InputValidator.getValidatedTime("Enter appointment time (HH:MM:SS): "));
         appointment.setStatus("Scheduled");
         appointmentDAO.addAppointment(appointment);
         System.out.println("Appointment scheduled successfully.");
+        }
     }
 
     public void updateAppointmentStatus(User user) throws SQLException {
-        int appointmentID = 0;
+        int appointmentId;
         if (user.getRole().equalsIgnoreCase("Doctor")){
             do{
-                int appointmentId = InputValidator.getValidatedInt("Enter appointment ID : \n To Exit Enter 0 : ");
-                if(appointmentID == 0){
+                appointmentId = InputValidator.getValidatedInt("Enter appointment ID : (To Exit Enter 0) ");
+                if(appointmentId == 0){
                     break;
                 }
                 if (appointmentDAO.getAppointmentStatus(appointmentId)) {
@@ -40,12 +46,11 @@ public class AppointmentController {
                 } else {
                     System.out.println("Appointment is already cancelled or completed");
                 }
-            }while (appointmentDAO.appointmentExistDoctor(appointmentID, user.getId()));
-
+            }while (!appointmentDAO.appointmentExistDoctor(appointmentId, user.getId()));
         }else if (user.getRole().equalsIgnoreCase("Patient")){
             do {
-                int appointmentId = InputValidator.getValidatedInt("Enter appointment ID : \n To Exit Enter 0 : ");
-                if(appointmentID == 0){
+                 appointmentId = InputValidator.getValidatedInt("Enter appointment ID :  (To Exit Enter 0) ");
+                if(appointmentId == 0){
                     break;
                 }
                 String newStatus = "Cancelled";
@@ -55,7 +60,7 @@ public class AppointmentController {
                 } else {
                     System.out.println("Appointment is already cancelled or completed");
                 }
-            }while (appointmentDAO.appointmentExistPatient(appointmentID, user.getId()));
+            }while (!appointmentDAO.appointmentExistPatient(appointmentId, user.getId()));
         }
     }
 

@@ -48,10 +48,9 @@ public class AppointmentDAO {
     public void updateAppointmentStatus(int appointmentId, String status) throws SQLException {
         String sql = "UPDATE appointment SET status = ? WHERE id = ? ";
         try (Connection connection = DBconnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+             PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1, status);
             stmt.setInt(2, appointmentId);
-//            stmt.setInt(3,patientID);
             stmt.executeUpdate();
         }
     }
