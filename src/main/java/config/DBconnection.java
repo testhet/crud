@@ -22,9 +22,9 @@ public class DBconnection {
             config.setJdbcUrl(properties.getProperty("db.url"));
             config.setUsername(properties.getProperty("db.username"));
             config.setPassword(properties.getProperty("db.password"));
-            config.setMaximumPoolSize(7);
+            config.setMaximumPoolSize(1);
             config.setMaxLifetime(600000);
-            config.setConnectionTimeout(30000);
+            config.setConnectionTimeout(5000);
 
             dataSource = new HikariDataSource(config);
 
