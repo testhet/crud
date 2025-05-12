@@ -54,20 +54,69 @@ public class PatientDAO {
 
         try (ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
-                System.out.println("Patient ID: " + rs.getInt("PatientID"));
-                System.out.println("Email: " + rs.getString("Email"));
-                System.out.println("Patient Name: " + rs.getString("Patient Name"));
-                System.out.println("Date of Birth: " + rs.getDate("DOB"));
-                System.out.println("Address: " + rs.getString("Address"));
-                System.out.println("Phone: " + rs.getString("Phone"));
-                System.out.println("Emergency Contact Number: " + rs.getString("Emergency Contact Number"));
-                System.out.println("Insurance ID: " + rs.getString("Insurance ID"));
-                System.out.println("Insurance Provider: " + rs.getString("Insurance Provider"));
+//                System.out.printf("%-28s%s%n", "Patient ID:", rs.getInt("PatientID"));
+//                System.out.printf("%-28s%s%n", "Email:", rs.getString("Email"));
+//                System.out.printf("%-28s%s%n", "Patient Name:", rs.getString("Patient Name"));
+//                System.out.printf("%-28s%s%n", "Date of Birth:", rs.getDate("DOB"));
+//                System.out.printf("%-28s%s%n", "Address:", rs.getString("Address"));
+//                System.out.printf("%-28s%s%n", "Phone:", rs.getString("Phone"));
+//                System.out.printf("%-28s%s%n", "Emergency Contact Number:", rs.getString("Emergency Contact Number"));
+//                System.out.printf("%-28s%s%n", "Insurance ID:", rs.getString("Insurance ID"));
+//                System.out.printf("%-28s%s%n", "Insurance Provider:", rs.getString("Insurance Provider"));
+                String line = "+-----------------------------+------------------------------+";
+
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Field", "Value");
+                System.out.println(line);
+
+                System.out.printf("| %-27s | %-28s |%n", "Patient ID", rs.getInt("PatientID"));
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Email", rs.getString("Email"));
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Patient Name", rs.getString("Patient Name"));
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Date of Birth", rs.getDate("DOB"));
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Address", rs.getString("Address"));
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Phone", rs.getString("Phone"));
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Emergency Contact Number", rs.getString("Emergency Contact Number"));
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Insurance ID", rs.getString("Insurance ID"));
+                System.out.println(line);
+                System.out.printf("| %-27s | %-28s |%n", "Insurance Provider", rs.getString("Insurance Provider"));
+                System.out.println(line);
+
             }
         }
         stmt.close();
         connection.close();
     }
+
+
+    public boolean phoneExist(long  s) throws SQLException{
+        String sql = "SELECT * FROM patients WHERE phone = ?";
+        Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setLong(1, s);
+        ResultSet rs = stmt.executeQuery();
+        stmt.close();
+        connection.close();
+        return rs.next();
+    }
+
+    public boolean insuranceIDExist(String s) throws SQLException{
+        String sql = "SELECT * FROM patients WHERE insuranceID = ?";
+        Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1,s);
+        ResultSet rs = stmt.executeQuery();
+        stmt.close();
+        connection.close();
+        return rs.next();
+    }
+
 
     public void updatePatientDetails(String address, long phone , long emergencyContact , int patientID  )throws SQLException{
         String sql = "UPDATE patients SET address = ?, phone = ? , emergency_contact_number = ? WHERE patient_id = ? ";

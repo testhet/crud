@@ -11,11 +11,6 @@ import java.util.Date;
 
 public class AppointmentController {
     private AppointmentDAO appointmentDAO = new AppointmentDAO();
-    private User currentUser;
-    public AppointmentController(User currentUser) {
-        this.currentUser = currentUser;
-    }
-
 
     public void addAppointmentFromUser(User user) throws SQLException {
         if (!user.getRole().equalsIgnoreCase("patient")) {
@@ -37,14 +32,22 @@ public class AppointmentController {
     public void updateAppointmentStatus(User user) throws SQLException {
         if (user.getRole().equalsIgnoreCase("doctor")) {
             int appointmentId = InputValidator.getValidatedInt("Enter appointment ID to update: ");
+            if(appointmentDAO.getAppointmentStatus(appointmentId)){
             String newStatus = InputValidator.getValidatedStatus("Enter new status (Completed/Cancelled): ");
             appointmentDAO.updateAppointmentStatus(appointmentId, newStatus);
-            System.out.println("Appointment status updated To :"+ newStatus);
+            System.out.println("Appointment status updated To :"+ newStatus);}
+            else {
+                System.out.println("Appointment is already cancelled or completed");
+            }
         } else if (user.getRole().equalsIgnoreCase("patient")) {
-            int appointmentId = InputValidator.getValidatedInt("Enter appointment ID to update: ");
+            int appointmentId = InputValidator.getValidatedInt("Enter appointment ID to Cancel: ");
             String newStatus = "Cancelled";
+            if (appointmentDAO.getAppointmentStatus(appointmentId)){
             appointmentDAO.updateAppointmentStatus(appointmentId,newStatus);
-            System.out.println("Appointment Cancelled Successfully.");
+            System.out.println("Appointment Cancelled Successfully.");}
+            else {
+                System.out.println("Appointment is already cancelled or completed");
+            }
         }
     }
 
@@ -55,10 +58,15 @@ public class AppointmentController {
             return;
         }
         int appointmentID = InputValidator.getValidatedInt("Enter Appointment ID to ReSchedule : ");
-        String date = InputValidator.getValidatedDateFuture("New Date For the Appointment: ");
-        String time = InputValidator.getValidatedTime("New Time For Appointment: ");
-        appointmentDAO.rescheduleAppointment(appointmentID,date,time);
-        System.out.println("SuccessFully Re-Scheduled Appointment For Date: "+date+" & Time: "+time);
+        if(appointmentDAO.getAppointmentStatus(appointmentID)){
+            String date = InputValidator.getValidatedDateFuture("New Date For the Appointment: ");
+            String time = InputValidator.getValidatedTime("New Time For Appointment: ");
+            appointmentDAO.rescheduleAppointment(appointmentID,date,time);
+            System.out.println("SuccessFully Re-Scheduled Appointment For Date: "+date+" & Time: "+time);
+        }else {
+            System.out.println("Cancelled Or Completed Appointments can't be Updated.");
+        }
+
     }
 
 
@@ -69,6 +77,9 @@ public class AppointmentController {
          ResultSet rs =  appointmentDAO.getAppointmentList(user);
             System.out.printf("%-3s %-3s %-15s %-8s %-12s %-12s %-10s %-12s%n","AppointmentID", "PatientID","PatientName","Gender","Phone","AppointmentDate","AppointmentTime", "Status");
             System.out.println("-----------------------------------------------------------------------------------------");
+            if (rs == null) {
+                System.out.println("No Appointment Found");
+            } else {
             while (rs.next()){
 
                 int appointmentID = rs.getInt("AppointmentID");
@@ -80,22 +91,25 @@ public class AppointmentController {
                 Time time =  rs.getTime("Time");
                 String status = rs.getString("Appointment Status");
                 System.out.printf("%-3s %-3s %-15s %-8s %-12s %-12s %-10s %-12s%n",appointmentID,patientID,PatientName,Gender,Phone,date,time,status);
+                }
             }
         } else if (user.getRole().equalsIgnoreCase("patient")) {
             ResultSet rs = appointmentDAO.getAppointmentList(user);
-            boolean found = false;
-            System.out.printf("%-3s %-3s %-15s %-12s %-12s %-10s %-12s%n", "AppointmentID", "PatientID", "DoctortName", "Departmetn",  "AppointmentDate", "AppointmentTime", "Status");
+            System.out.printf("%-3s %-3s %-15s %-12s %-12s %-10s %-12s%n", "AppointmentID", "PatientID", "DoctorName", "Department", "AppointmentDate", "AppointmentTime", "Status");
             System.out.println("-----------------------------------------------------------------------------------------");
-            while (rs.next()) {
-                found = true;
-                int appointmentID = rs.getInt("AppointmentID");
-                int doctorID = rs.getInt("DoctorID");
-                String DoctorName = rs.getString("DoctorName");
-                String Department = rs.getString("Department");
-                Date date = rs.getDate("Date");
-                Time time = rs.getTime("Time");
-                String status = rs.getString("Appointment Status");
-                System.out.printf("%-3s %-3s %-15s %-12s %-12s %-10s %-12s%n", appointmentID,doctorID,DoctorName,Department,date,time,status);
+            if (rs == null) {
+                System.out.println("No Appointment Found");
+            } else {
+                while (rs.next()) {
+                    int appointmentID = rs.getInt("AppointmentID");
+                    int doctorID = rs.getInt("DoctorID");
+                    String DoctorName = rs.getString("DoctorName");
+                    String Department = rs.getString("Department");
+                    Date date = rs.getDate("Date");
+                    Time time = rs.getTime("Time");
+                    String status = rs.getString("Appointment Status");
+                    System.out.printf("%-3s %-3s %-15s %-12s %-12s %-10s %-12s%n", appointmentID, doctorID, DoctorName, Department, date, time, status);
+                }
             }
         }
             else {

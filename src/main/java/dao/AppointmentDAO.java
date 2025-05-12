@@ -23,25 +23,25 @@ public class AppointmentDAO {
         connection.close();
     }
 
-    public void updateAppointment(Appointment appointment) throws SQLException {
-        String sql = "UPDATE appointment SET doctor_id = ?, patient_id = ?, appointment_date = ?, " +
-                "appointment_time = ?, status = ? WHERE id = ?";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setInt(1, appointment.getDoctor_id());
-        stmt.setInt(2, appointment.getPatient_id());
-        stmt.setDate(3, Date.valueOf(appointment.getAppointment_date()));
-        stmt.setTime(4, Time.valueOf(appointment.getAppointment_time()));
-        stmt.setString(5, appointment.getStatus());
-        stmt.setInt(6, appointment.getId());
-        stmt.executeUpdate();
-        System.out.println("Appointment updated successfully.");
-        stmt.close();
-        connection.close();
-    }
+//    public void updateAppointment(Appointment appointment) throws SQLException {
+//        String sql = "UPDATE appointment SET doctor_id = ?, patient_id = ?, appointment_date = ?, " +
+//                "appointment_time = ?, status = ? WHERE id = ?";
+//        Connection connection = DBconnection.getConnection();
+//        PreparedStatement stmt = connection.prepareStatement(sql);
+//        stmt.setInt(1, appointment.getDoctor_id());
+//        stmt.setInt(2, appointment.getPatient_id());
+//        stmt.setDate(3, Date.valueOf(appointment.getAppointment_date()));
+//        stmt.setTime(4, Time.valueOf(appointment.getAppointment_time()));
+//        stmt.setString(5, appointment.getStatus());
+//        stmt.setInt(6, appointment.getId());
+//        stmt.executeUpdate();
+//        System.out.println("Appointment updated successfully.");
+//        stmt.close();
+//        connection.close();
+//    }
 
     public void updateAppointmentStatus(int appointmentId, String status) throws SQLException {
-        String sql = "UPDATE appointment SET status = ? WHERE id = ?";
+        String sql = "UPDATE appointment SET status = ? WHERE id = ? ";
         Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, status);
@@ -63,60 +63,69 @@ public class AppointmentDAO {
         connection.close();
     }
 
-
-
-    public ResultSet getAppointmentList(User currentUser) throws SQLException{
-        String appointmentListForDoctor = """
-            SELECT
-                 a.id as AppointmentID,
-                 u.id AS PatientID,
-                 u.user_name AS PatientName,
-                 p.gender AS Gender,
-                 p.phone AS Phone,
-                 a.appointment_date AS Date,
-                 a.appointment_time AS Time,
-                 a.status AS "Appointment Status"
-             FROM appointment a
-             JOIN patients p ON p.patient_id = a.patient_id
-             JOIN users u ON u.id = p.patient_id
-             WHERE a.doctor_id = ? AND u.role = "PATIENT"
-             ORDER BY a.appointment_date, a.appointment_time;
-           """;
-        String appointmentListForPatient = """
-            SELECT
-                a.id AS AppointmentID,
-                u.id AS DoctorID,
-                u.user_name AS DoctorName,
-                d.department AS Department,
-                a.appointment_date AS Date,
-                a.appointment_time AS Time,
-                a.status AS "Appointment Status"
-            FROM appointment a
-            JOIN doctors d ON d.doctor_id = a.doctor_id
-            JOIN users u ON u.id = d.doctor_id
-            WHERE a.patient_id = ? AND u.role = "DOCTOR"
-            ORDER BY a.appointment_date,a.appointment_time;
-            """;
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            if (currentUser.getRole().equalsIgnoreCase("DOCTOR")) {
-                statement = connection.prepareStatement(appointmentListForDoctor);
-                statement.setInt(1, currentUser.getId()); // Set doctor_id parameter
-            } else if (currentUser.getRole().equalsIgnoreCase("PATIENT")) {
-                statement = connection.prepareStatement(appointmentListForPatient);
-                statement.setInt(1, currentUser.getId()); // Set patient_id parameter
-            } else {
-                System.out.println("Invalid user role: " + currentUser.getRole());
-                return resultSet;
-            }
-            resultSet = statement.executeQuery();
-        } catch (SQLException e) {
-            System.err.println("Error retrieving appointment list: " + e.getMessage());
+    public boolean getAppointmentStatus (int id) throws SQLException {
+        String sql = "SELECT * FROM appointment WHERE id = ? && status = \"Scheduled\" ; ";
+        try (Connection connection = DBconnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
         }
-        return resultSet;
     }
 
 
+
+    public ResultSet getAppointmentList(User currentUser) throws SQLException {
+        String appointmentListForDoctor = """
+                 SELECT
+                      a.id as AppointmentID,
+                      u.id AS PatientID,
+                      u.user_name AS PatientName,
+                      p.gender AS Gender,
+                      p.phone AS Phone,
+                      a.appointment_date AS Date,
+                      a.appointment_time AS Time,
+                      a.status AS "Appointment Status"
+                  FROM appointment a
+                  JOIN patients p ON p.patient_id = a.patient_id
+                  JOIN users u ON u.id = p.patient_id
+                  WHERE a.doctor_id = ? AND u.role = "PATIENT"
+                  ORDER BY a.appointment_date, a.appointment_time;
+                """;
+        String appointmentListForPatient = """
+                SELECT
+                    a.id AS AppointmentID,
+                    u.id AS DoctorID,
+                    u.user_name AS DoctorName,
+                    d.department AS Department,
+                    a.appointment_date AS Date,
+                    a.appointment_time AS Time,
+                    a.status AS "Appointment Status"
+                FROM appointment a
+                JOIN doctors d ON d.doctor_id = a.doctor_id
+                JOIN users u ON u.id = d.doctor_id
+                WHERE a.patient_id = ? AND u.role = "DOCTOR"
+                ORDER BY a.appointment_date,a.appointment_time;
+                """;
+        try (Connection connection = DBconnection.getConnection()) {
+            PreparedStatement statement;
+            ResultSet resultSet = null;
+            try {
+                if (currentUser.getRole().equalsIgnoreCase("DOCTOR")) {
+                    statement = connection.prepareStatement(appointmentListForDoctor);
+                    statement.setInt(1, currentUser.getId()); // Set doctor_id parameter
+                } else if (currentUser.getRole().equalsIgnoreCase("PATIENT")) {
+                    statement = connection.prepareStatement(appointmentListForPatient);
+                    statement.setInt(1, currentUser.getId()); // Set patient_id parameter
+                } else {
+                    System.out.println("Invalid user role: " + currentUser.getRole());
+                    return null;
+                }
+                resultSet = statement.executeQuery();
+            } catch (SQLException e) {
+                System.err.println("Error retrieving appointment list: " + e.getMessage());
+            }
+            return resultSet;
+        }
+    }
 }

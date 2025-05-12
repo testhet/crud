@@ -12,7 +12,7 @@ public class UserController {
 
     public User addUser(String role) throws SQLException {
         User user = new User();
-        String email = "";
+        String email ;
         while (true) {
             email = InputValidator.getValidatedEmail("Enter Email With You Want to Sign-up : ");
             try {
@@ -43,11 +43,16 @@ public class UserController {
         while (true) {
             email = InputValidator.getValidatedEmail("Enter Email For Which You Want To Change Password : ");
             System.out.println();
-            dob = InputValidator.getValidatedDatePast("Enter Your Date Of birth In \"YYYY-MM-DD\" Format : ");
+
                         if(!userDAO.isEmailExist(email)){
                             System.out.println("Email Does Not Exist, Please Enter Existing Email.");
-                            continue;
+                            break;
                         }
+                        else if(userDAO.isDoctor(email)){
+                            System.out.println("Doctor Can't Forget Password! THEY ARE SMART");
+                            break;
+                        }
+                        dob = InputValidator.getValidatedDatePast("Enter Your Date Of birth In \"YYYY-MM-DD\" Format : ");
                         if(!userDAO.dobMatch(email,dob)){
                             System.out.println("Provided DOB does not Match With User's DOB.");
                             continue;
@@ -71,15 +76,26 @@ public class UserController {
 
 
 
-    public User login() throws SQLException {
+    public User login() {
+        User user = null;
         String email = InputValidator.getValidatedEmail("Enter email: ");
-        String password = InputValidator.getValidatedPassword("Enter Password: ");
-        User user = userDAO.userLogin(email,password);
-        if(user != null){
-            System.out.println("Login Successful for "+ user.getRole() + " " + user.getUser_name());
+        while (user == null) {
+            String password = InputValidator.getValidatedPassword("Enter Password: ");
+            try {
+                user = userDAO.userLogin(email, password);
+                if (user == null) {
+                    System.out.println("Invalid credentials. Please try again.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Login failed due to a system error: " + e.getMessage());
+                break;
+            }
         }
+        assert user != null;
+        System.out.println("Login Successful for " + user.getRole() + " " + user.getUser_name());
         return user;
     }
+
 
     public void updatePassword (User user) throws SQLException{
         String password = "";

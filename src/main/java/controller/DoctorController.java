@@ -12,10 +12,7 @@ public class DoctorController {
 
     private DoctorDAO doctorDAO = new DoctorDAO();
     private UserDAO userDAO  = new UserDAO();
-    private User currentUser;
-    public DoctorController(User currentUser) {
-        this.currentUser = currentUser;
-    }
+
 
 
     public void registerDoctor() throws SQLException {
@@ -28,10 +25,10 @@ public class DoctorController {
             }
             Doctor doctor = new Doctor();
             doctor.setUser(user);
-            doctor.setSpecialization(InputValidator.getValidatedTextField("Enter Doctors's Specialization"));
-            doctor.setDepartment(InputValidator.getValidatedDepartment("Select Department For Doctor"));
+            doctor.setSpecialization(InputValidator.getValidatedTextField("Enter Doctors's Specialization : "));
+            doctor.setDepartment(InputValidator.getValidatedDepartment("Select Department For Doctor : "));
             doctorDAO.registerDoctor(doctor);
-            System.out.println("Successfully Registered Doctor!!!");
+            System.out.println("Doctor Registered Successfully!!!");
         } catch (Exception e) {
             System.out.println("Error Registering Doctor!!");
             assert user != null;
@@ -41,7 +38,7 @@ public class DoctorController {
 
 
     public void viewAssociatedPatientController(User user)throws SQLException{
-        ResultSet rs = doctorDAO.viewAssociatedPatient(currentUser.getId());
+        ResultSet rs = doctorDAO.viewAssociatedPatient(user.getId());
         boolean found = false;
         System.out.printf("%-5s %-15s %-12s %-8s %-20s %-12s %-15s%n",
                 "PatientID", "Name", "DOB", "Gender", "Address", "Phone", "InsuranceID");
@@ -59,14 +56,14 @@ public class DoctorController {
                     patientId, name, dob, gender, address, phone, insuranceID);
         }
         if (!found) {
-            System.out.println("No patients found associated with doctor ID: " + currentUser.getId());
+            System.out.println("No patients found associated with doctor ID: " + user.getId());
         }
         rs.close();
     }
 
 
     public void deletePatient(User user)throws SQLException{
-        if(currentUser.getRole().equalsIgnoreCase("doctor")){
+        if(user.getRole().equalsIgnoreCase("doctor")){
             viewAssociatedPatientController(user);
             int id = InputValidator.getValidatedInt("Enter Patient Id You Want Do Delete: ");
             String confirmation = "CONFIRM";

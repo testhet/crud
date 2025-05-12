@@ -9,9 +9,9 @@ import java.util.Scanner;
 public class consoleController {
     User currentUser = null;
     UserController userController= new UserController();
-    AppointmentController appointmentController = new AppointmentController(currentUser);
-    PatientController patientController = new PatientController(currentUser);
-    DoctorController doctorController = new DoctorController(currentUser);
+    AppointmentController appointmentController = new AppointmentController();
+    PatientController patientController = new PatientController();
+    DoctorController doctorController = new DoctorController();
 
 
     Scanner scanner = new Scanner(System.in);
@@ -29,7 +29,6 @@ public class consoleController {
                     3. Patient Registration
                     4. Forgot Password
                     5. Exit
-                    
                     """);
         System.out.print("Enter your choice: ");
         while (!scanner.hasNextInt()) {
@@ -79,16 +78,15 @@ public class consoleController {
         do { System.out.println("""
                      Welcome To Patient Menu
                   ---------------------------------
-                       1.Schedule Appointments
-                       2.View Appointments
-                       3.Cancel Appointments
-                       4.Re-Schedule Appointments
-                       5.Update Profile
-                       6.Update Password
-                       7.Logout
-                     \s
-                      \s
-                  \s""");
+                       1.View Profile
+                       2.Schedule Appointments
+                       3.View Appointments
+                       4.Cancel Appointments
+                       5.Re-Schedule Appointments
+                       6.Update Profile
+                       7.Update Password
+                       8.Logout
+                      \s""");
             System.out.print("Enter your choice: ");
             while (!scanner.hasNextInt()) {
                 System.out.println("Please enter a valid number.");
@@ -99,26 +97,35 @@ public class consoleController {
 
             switch (choice) {
                 case 1:
-                    appointmentController.addAppointmentFromUser(currentUser);
+                    patientController.viewProfile(currentUser);
                     continue;
                 case 2:
-                    appointmentController.viewAppointments(currentUser);
+                    assert currentUser != null;
+                    appointmentController.addAppointmentFromUser(currentUser);
                     continue;
                 case 3:
+                    assert currentUser != null;
+                    appointmentController.viewAppointments(currentUser);
+                    continue;
+                case 4:
+                    assert currentUser != null;
                     appointmentController.viewAppointments(currentUser);
                     appointmentController.updateAppointmentStatus(currentUser);
                     continue;
-                case 4:
+                case 5:
+                    assert currentUser != null;
                     appointmentController.viewAppointments(currentUser);
                     appointmentController.reScheduleAppointment(currentUser);
                     continue;
-                case 5:
+                case 6:
                     patientController.viewProfile(currentUser);
+                    assert currentUser != null;
                     patientController.updatePatient(currentUser);
                     continue;
-                case 6:
-                    userController.updatePassword(currentUser);
                 case 7:
+                    assert currentUser != null;
+                    userController.updatePassword(currentUser);
+                case 8:
                     System.out.println("logging Out......");
                     currentUser = null;
                     break;
@@ -126,13 +133,13 @@ public class consoleController {
                     System.out.println("Invalid choice. Please try again.");
             }
 
-        }while (choice!=7);
+        }while (choice!=8);
 
     }
 
     private void doctorMenu(User currentUser) throws SQLException {
 
-        int choice = 0;
+        int choice;
         do{ System.out.println("""
                    Welcome to Doctor Menu
                   ------------------------
@@ -141,9 +148,7 @@ public class consoleController {
                        3.Delete Patients BY ID
                        4.Logout
                        5.Update Password
-                   
-                   """);
-
+                  """);
             System.out.print("Enter your choice: ");
             while (!scanner.hasNextInt()) {
                 System.out.println("Please enter a valid number.");
@@ -151,23 +156,22 @@ public class consoleController {
             }
             choice = scanner.nextInt();
             scanner.nextLine();
-
             switch (choice) {
                 case 1:
-                    appointmentController.viewAppointments(this.currentUser);
+                    appointmentController.viewAppointments(currentUser);
                     break;
                 case 2:
-                    doctorController.viewAssociatedPatientController(this.currentUser);
+                    doctorController.viewAssociatedPatientController(currentUser);
                     break;
                 case 3:
-                    doctorController.deletePatient(this.currentUser);
+                    doctorController.deletePatient(currentUser);
                     break;
                 case 4:
                     System.out.println("Logging Out.....");
-                    this.currentUser = null;
+                    currentUser = null;
                     break;
                 case 5:
-                    userController.updatePassword(this.currentUser);
+                    userController.updatePassword(currentUser);
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }

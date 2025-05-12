@@ -35,12 +35,12 @@ public class DoctorDAO {
                 WHERE a.doctor_id = ? ORDER BY u.id
                 """;
 
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(patientList);
+       try( Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(patientList)){
 
         stmt.setInt(1, id);
-        ResultSet rs =  stmt.executeQuery();
-        return rs;
+        return stmt.executeQuery();
+        }
     }
 
 

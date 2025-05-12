@@ -30,8 +30,8 @@ public class UserDAO {
 
     public User userLogin(String email, String password) throws SQLException {
         String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
-        Connection connection = DBconnection.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql);
+       try( Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql)){
         stmt.setString(1, email);
         stmt.setString(2, password);
         ResultSet rs = stmt.executeQuery();
@@ -41,11 +41,12 @@ public class UserDAO {
             user.setUser_name(rs.getString("user_name"));
             user.setEmail(rs.getString("email"));
             user.setRole(rs.getString("role"));
+
             return user;
-        } else {
-            System.out.println("Invalid Email Or Password");
-        }
+
+       }
         return null;
+        }
     }
 
     public void deleteUser(int id) throws SQLException {
@@ -58,13 +59,25 @@ public class UserDAO {
         connection.close();
     }
 
-
-    public boolean isEmailExist(String s) throws SQLException {
-        String sql = "SELECT * FROM users WHERE email = ?";
+    public boolean isDoctor(String s) throws SQLException {
+        String sql = "SELECT * FROM users WHERE email = ? && role =\"doctor\";";
         Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, s.trim());
         ResultSet rs = stmt.executeQuery();
+        stmt.close();
+        connection.close();
+        return rs.next();
+    }
+
+    public boolean isEmailExist(String s) throws SQLException {
+        String sql = "SELECT * FROM users WHERE email = ?;";
+        Connection connection = DBconnection.getConnection();
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, s.trim());
+        ResultSet rs = stmt.executeQuery();
+        stmt.close();
+        connection.close();
         return rs.next();
     }
 
@@ -93,6 +106,8 @@ public class UserDAO {
         stmt.setString(1,email.trim());
         stmt.setString(2,dob.trim());
         ResultSet rs = stmt.executeQuery();
+        stmt.close();
+        connection.close();
         return rs.next();
     }
 }
