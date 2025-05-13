@@ -67,7 +67,7 @@ public class UserDAO {
     }
 
     public boolean isEmailExist(String s) throws SQLException {
-        String sql = "SELECT * FROM users WHERE email = ?;";
+        String sql = "SELECT * FROM users WHERE LOWER(email) = LOWER(?);";
         try(Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, s.trim());

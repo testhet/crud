@@ -28,7 +28,7 @@ public class PatientDAO {
        }
     }
 
-    public boolean viewProfile(int i) throws SQLException{
+    public void viewProfile(int i) throws SQLException{
         String sql = """
                 SELECT
                     u.id AS PatientID,
@@ -59,12 +59,9 @@ public class PatientDAO {
                 System.out.printf("%-28s%s%n", "Emergency Contact Number:", rs.getString("Emergency Contact Number"));
                 System.out.printf("%-28s%s%n", "Insurance ID:", rs.getString("Insurance ID"));
                 System.out.printf("%-28s%s%n", "Insurance Provider:", rs.getString("Insurance Provider"));
-               } else {
-                   return false;
                }
            }
        }
-       return true;
     }
 
 

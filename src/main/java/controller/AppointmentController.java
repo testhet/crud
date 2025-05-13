@@ -1,6 +1,7 @@
 package controller;
 
 import dao.AppointmentDAO;
+import dao.DoctorDAO;
 import model.Appointment;
 import model.User;
 import Validation_helper.InputValidator;
@@ -9,26 +10,33 @@ import java.sql.SQLException;
 
 public class AppointmentController {
     private AppointmentDAO appointmentDAO = new AppointmentDAO();
+    private DoctorDAO doctorDAO = new DoctorDAO();
 
     public void addAppointmentFromUser(User user) throws SQLException {
         if (!user.getRole().equalsIgnoreCase("patient")) {
             System.out.println("Only patients can schedule appointments.");
             return;
         }
-        while (true){
         Appointment appointment = new Appointment();
-        int id = InputValidator.getValidatedInt("Enter doctor ID: (OR Enter 0 to Exit) ");
-        if(id == 0){
-            break;
-        }
-            appointment.setDoctor_id(id);
-            appointment.setPatient_id(user.getId());
+        boolean doctorExiast;
+        int id;
+        do {
+            id = InputValidator.getValidatedInt("\"Enter doctor ID: (OR Enter 0 to Exit) ");
+            if(id == 0){return;}
+            doctorExiast = doctorDAO.doctorExist(id);
+            if(!doctorExiast){
+                System.out.println("Enter Valid Doctor ID form Above list");
+            }else {
+                appointment.setDoctor_id(id);
+            }
+        }while (!doctorExiast);
+        appointment.setPatient_id(user.getId());
         appointment.setAppointment_date(InputValidator.getValidatedDateFuture("Enter appointment date (YYYY-MM-DD): "));
         appointment.setAppointment_time(InputValidator.getValidatedTime("Enter appointment time (HH:MM:SS): "));
         appointment.setStatus("Scheduled");
         appointmentDAO.addAppointment(appointment);
         System.out.println("Appointment scheduled successfully.");
-        }
+
     }
 
     public void updateAppointmentStatus(User user) throws SQLException {
@@ -43,6 +51,7 @@ public class AppointmentController {
                     String newStatus = InputValidator.getValidatedStatus("Enter new status (Completed/Cancelled): ");
                     appointmentDAO.updateAppointmentStatus(appointmentId, newStatus);
                     System.out.println("Appointment status updated To :" + newStatus);
+                    break;
                 } else {
                     System.out.println("Appointment is already cancelled or completed");
                 }
@@ -57,6 +66,7 @@ public class AppointmentController {
                 if (appointmentDAO.getAppointmentStatus(appointmentId)) {
                     appointmentDAO.updateAppointmentStatus(appointmentId, newStatus);
                     System.out.println("Appointment Cancelled Successfully.");
+                    break;
                 } else {
                     System.out.println("Appointment is already cancelled or completed");
                 }

@@ -38,16 +38,15 @@ public class PatientController {
                 }
             } while (phoneExists);
             patient.setEmergency_contact_number(InputValidator.getValidatedPhone("Enter Emergency Contact Number : "));
-            patient.setInsuranceID(InputValidator.getValidatedInsuranceId("Enter Insurance ID : "));
             boolean insuranceExist;
             String id;
             do {
                 id = InputValidator.getValidatedInsuranceId("Enter Insurance ID : ");
                 insuranceExist = patientDAO.insuranceIDExist(id);
                 if (insuranceExist) {
-                    System.out.println("This phone number is already in use. Please try a different number.");
+                    System.out.println("User with Insurance ID already EXIST");
                 } else {
-                    patient.setPhone(a);
+                    patient.setInsuranceID(id);
                 }
             } while (insuranceExist);
             patient.setInsurance_provider(InputValidator.getValidatedName("Enter Insurance Provider Name : "));
@@ -62,12 +61,26 @@ public class PatientController {
 
 
     public void updatePatient(User user)throws SQLException{
-        String Address = InputValidator.getValidatedTextField("Enter New Address: ");
-        long phone = InputValidator.getValidatedPhone("Enter New Phone Number: ");
-        long emergencyContact = InputValidator.getValidatedPhone("Enter New Emergency Contact number: ");
-        int id = user.getId();
-        patientDAO.updatePatientDetails(Address,phone,emergencyContact,id);
-        System.out.println("Successfully Updated Patient Profile!!!");
+        while (true){
+        String Address = InputValidator.getValidatedTextField("Enter New Address: (OR Enter 0 to Exit!! )");
+        if(Address.trim().equals("0")){
+            break;
+        }
+            boolean phoneExists;
+            long phone;
+            do {
+                phone = InputValidator.getValidatedPhone("Enter New Phone Number: ");
+                phoneExists = patientDAO.phoneExist(phone);
+                if (phoneExists) {
+                    System.out.println("This phone number is already in use. Please try a different number.");
+                } else {
+                    long emergencyContact = InputValidator.getValidatedPhone("Enter New Emergency Contact number: ");
+                    int id = user.getId();
+                    patientDAO.updatePatientDetails(Address,phone,emergencyContact,id);
+                    System.out.println("Successfully Updated Patient Profile!!!");
+                }
+            } while (phoneExists);
+        }
     }
 
     public void viewProfile(User user) throws SQLException{
