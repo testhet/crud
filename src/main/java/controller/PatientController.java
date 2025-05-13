@@ -80,6 +80,7 @@ public class PatientController {
                     System.out.println("Successfully Updated Patient Profile!!!");
                 }
             } while (phoneExists);
+            break;
         }
     }
 

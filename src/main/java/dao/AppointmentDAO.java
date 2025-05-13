@@ -33,6 +33,7 @@ public class AppointmentDAO {
         }
     }
 
+
     public boolean appointmentExistDoctor(int id, int DoctorID) throws SQLException {
         String sql = "SELECT * FROM appointment WHERE id = ? && doctor_id = ?;";
         ResultSet rs;
@@ -116,7 +117,7 @@ public class AppointmentDAO {
                     statement = connection.prepareStatement(appointmentListForDoctor);
                     statement.setInt(1, user.getId()); // Set doctor_id parameter
                     ResultSet rs = statement.executeQuery();
-                    System.out.printf("%-3s %-3s %-15s %-8s %-12s %-12s %-10s %-12s%n", "AppointmentID", "PatientID", "PatientName", "Gender", "Phone", "AppointmentDate", "AppointmentTime", "Status");
+                    System.out.printf("%-13s %-13s %-25s %-18s %-22s %-22s %-20s %-22s%n", "AppointmentID", "PatientID", "PatientName", "Gender", "Phone", "AppointmentDate", "AppointmentTime", "Status");
                     System.out.println("-----------------------------------------------------------------------------------------");
                     while (rs.next()) {
                         int appointmentID = rs.getInt("AppointmentID");
@@ -127,13 +128,13 @@ public class AppointmentDAO {
                         java.util.Date date = rs.getDate("Date");
                         Time time = rs.getTime("Time");
                         String status = rs.getString("Appointment Status");
-                        System.out.printf("%-3s %-3s %-15s %-8s %-12s %-12s %-10s %-12s%n", appointmentID, patientID, PatientName, Gender, Phone, date, time, status);
+                        System.out.printf("%-13s %-13s %-25s %-18s %-22s %-22s %-20s %-22s%n", appointmentID, patientID, PatientName, Gender, Phone, date, time, status);
                     } rs.close();
                 } else if (user.getRole().equalsIgnoreCase("PATIENT")) {
                     statement = connection.prepareStatement(appointmentListForPatient);
                     statement.setInt(1, user.getId()); // Set patient_id parameter
                     ResultSet rs = statement.executeQuery();
-                    System.out.printf("%-3s %-3s %-15s %-12s %-12s %-10s %-12s%n", "AppointmentID", "PatientID", "DoctorName", "Department", "AppointmentDate", "AppointmentTime", "Status");
+                    System.out.printf("%-13s %-13s %-25s %-22s %-22s %-20s %-22s%n", "AppointmentID", "PatientID", "DoctorName", "Department", "AppointmentDate", "AppointmentTime", "Status");
                     System.out.println("-----------------------------------------------------------------------------------------");
                     while (rs.next()) {
                         int appointmentID = rs.getInt("AppointmentID");
@@ -143,7 +144,7 @@ public class AppointmentDAO {
                         java.util.Date date = rs.getDate("Date");
                         Time time = rs.getTime("Time");
                         String status = rs.getString("Appointment Status");
-                        System.out.printf("%-3s %-3s %-15s %-12s %-12s %-10s %-12s%n", appointmentID, doctorID, DoctorName, Department, date, time, status);
+                        System.out.printf("%-13s %-13s %-25s %-22s %-22s %-20s %-22s%n", appointmentID, doctorID, DoctorName, Department, date, time, status);
                     } rs.close();
                 } else {
                     System.out.println("Invalid user role: " + user.getRole());
@@ -154,4 +155,3 @@ public class AppointmentDAO {
         }
     }
 }
-

@@ -39,40 +39,51 @@ public class AppointmentController {
 
     }
 
-    public void updateAppointmentStatus(User user) throws SQLException {
-        int appointmentId;
+
+    public void updateAppointmentStatus(User user) throws  SQLException{
+        int appointmentID;
         if (user.getRole().equalsIgnoreCase("Doctor")){
-            do{
-                appointmentId = InputValidator.getValidatedInt("Enter appointment ID : (To Exit Enter 0) ");
-                if(appointmentId == 0){
-                    break;
-                }
-                if (appointmentDAO.getAppointmentStatus(appointmentId)) {
-                    String newStatus = InputValidator.getValidatedStatus("Enter new status (Completed/Cancelled): ");
-                    appointmentDAO.updateAppointmentStatus(appointmentId, newStatus);
-                    System.out.println("Appointment status updated To :" + newStatus);
-                    break;
-                } else {
-                    System.out.println("Appointment is already cancelled or completed");
-                }
-            }while (!appointmentDAO.appointmentExistDoctor(appointmentId, user.getId()));
-        }else if (user.getRole().equalsIgnoreCase("Patient")){
             do {
-                 appointmentId = InputValidator.getValidatedInt("Enter appointment ID :  (To Exit Enter 0) ");
-                if(appointmentId == 0){
+                appointmentID = InputValidator.getValidatedInt("Enter Appointment ID to ReSchedule : \n To exit Enter 0 : ");
+                if (appointmentID == 0) {
                     break;
                 }
-                String newStatus = "Cancelled";
-                if (appointmentDAO.getAppointmentStatus(appointmentId)) {
-                    appointmentDAO.updateAppointmentStatus(appointmentId, newStatus);
-                    System.out.println("Appointment Cancelled Successfully.");
-                    break;
-                } else {
-                    System.out.println("Appointment is already cancelled or completed");
+                if(!appointmentDAO.appointmentExistDoctor(appointmentID, user.getId())){
+                    System.out.println("No associated appointment Exist for ID Provided");
+                }else {
+                    if (appointmentDAO.getAppointmentStatus(appointmentID)) {
+                        String newStatus = InputValidator.getValidatedStatus("Enter new status (Completed/Cancelled): ");
+                        appointmentDAO.updateAppointmentStatus(appointmentID, newStatus);
+                        System.out.println("Appointment status updated To :" + newStatus);
+                    } else {
+                        System.out.println("Cancelled Or Completed Appointments can't be Updated.");
+                    }
                 }
-            }while (!appointmentDAO.appointmentExistPatient(appointmentId, user.getId()));
+            }while (!appointmentDAO.appointmentExistDoctor(appointmentID,user.getId()));
+        }
+        else if(user.getRole().equalsIgnoreCase("Patient")){
+            do {
+                appointmentID = InputValidator.getValidatedInt("Enter Appointment ID to ReSchedule : \n To exit Enter 0 : ");
+                if (appointmentID == 0) {
+                    break;
+                }
+                if(!appointmentDAO.appointmentExistPatient(appointmentID, user.getId())){
+                    System.out.println("No associated appointment Exist for ID Provided");
+
+                }else {
+                    if (appointmentDAO.getAppointmentStatus(appointmentID)) {
+                        appointmentDAO.updateAppointmentStatus(appointmentID, "Cancelled");
+                        System.out.println("Appointment Cancelled!!!");
+                    } else {
+                        System.out.println("Already Cancelled Or Completed Appointments can't be Updated.");
+
+                    }
+                }
+
+            }while (!appointmentDAO.appointmentExistPatient(appointmentID,user.getId()));
         }
     }
+
 
     public void reScheduleAppointment(User user)throws SQLException {
         if (!user.getRole().equalsIgnoreCase("Patient")) {
@@ -95,7 +106,7 @@ public class AppointmentController {
                 System.out.println("Cancelled Or Completed Appointments can't be Updated.");
                 }
             }  else  {
-                System.out.println("Associated Appointment Does Not Exist With ID Provided");
+                System.out.println("No Associated Appointment Exist With ID Provided");
             }
         } while (!appointmentDAO.appointmentExistPatient(appointmentID, user.getId()));
     }

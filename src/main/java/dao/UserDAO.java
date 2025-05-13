@@ -100,8 +100,6 @@ public class UserDAO {
             stmt.setString(1, email.trim());
             stmt.setString(2, dob.trim());
             ResultSet rs = stmt.executeQuery();
-            stmt.close();
-            connection.close();
             return rs.next();
         }
     }

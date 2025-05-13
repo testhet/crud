@@ -40,7 +40,15 @@ public class consoleController {
 
         switch (choice) {
             case 1:
-                handleLogin();
+                currentUser = userController.login();
+                if (currentUser==null){
+                    continue;
+                }
+                if(currentUser.getRole().equalsIgnoreCase("doctor")){
+                    doctorMenu(currentUser);
+                } else if (currentUser.getRole().equalsIgnoreCase("patient")) {
+                    patientMenu(currentUser);
+                }
                 break;
             case 2:
                 System.out.println("Doctor Registration");
@@ -63,15 +71,6 @@ public class consoleController {
     }
 
 
-    private void handleLogin() throws SQLException {
-       currentUser = userController.login();
-
-       if(currentUser.getRole().equalsIgnoreCase("doctor")){
-           doctorMenu(currentUser);
-       } else if (currentUser.getRole().equalsIgnoreCase("patient")) {
-            patientMenu(currentUser);
-       }
-    }
 
     private void patientMenu(User currentUser) throws SQLException{
         int choice ;
@@ -127,6 +126,7 @@ public class consoleController {
                 case 7:
                     assert currentUser != null;
                     userController.updatePassword(currentUser);
+                    continue;
                 case 8:
                     System.out.println("logging Out......");
                     currentUser = null;
