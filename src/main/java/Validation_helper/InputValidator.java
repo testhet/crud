@@ -2,9 +2,7 @@ package Validation_helper;
 
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -49,6 +47,7 @@ public class InputValidator {
             }
         }
     }
+
     public static String getValidatedDatePast(String s) {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -72,14 +71,17 @@ public class InputValidator {
     }
 
     public static String getValidatedTime(String s) {
+        Scanner scanner = new Scanner(System.in);
+        String namePattern = "^\\d{2}:\\d{2}-\\d{2}:\\d{2}$";
+
         while (true) {
             System.out.print(s);
             String input = scanner.nextLine().trim();
-            try {
-                LocalTime.parse(input);
+
+            if (Pattern.matches(namePattern, input)) {
                 return input;
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid time format. Use HH:MM:SS.");
+            } else {
+                System.out.println("Invalid Formate Please Enter Again From Above List(Ex.15:00-16:00) ");
             }
         }
     }
@@ -95,7 +97,6 @@ public class InputValidator {
             }
         }
     }
-
 
 
     public static String getValidatedEmail(String s) {
@@ -119,7 +120,7 @@ public class InputValidator {
             System.out.println(s);
             String input = scanner.nextLine();
 
-            if(input.isEmpty()){
+            if (input.isEmpty()) {
                 System.out.println("Password Can't Be empty");
             } else if (input.length() < 6) {
                 System.out.println("Password must be at least 6 characters long.");
@@ -136,21 +137,21 @@ public class InputValidator {
     }
 
 
-    public static String getValidatedName(String s)  {
-    Scanner scanner = new Scanner(System.in);
-    String namePattern = "^[a-zA-Z\\s'-]+$";
+    public static String getValidatedName(String s) {
+        Scanner scanner = new Scanner(System.in);
+        String namePattern = "^[a-zA-Z\\s'-]+$";
 
         while (true) {
-        System.out.print(s);
-        String input = scanner.nextLine().trim();
+            System.out.print(s);
+            String input = scanner.nextLine().trim();
 
-        if (Pattern.matches(namePattern, input)) {
-            return input;
-        } else {
-            System.out.println("Invalid Name Formate, Please Enter Correct name.");
+            if (Pattern.matches(namePattern, input)) {
+                return input;
+            } else {
+                System.out.println("Invalid Name Formate, Please Enter Correct name.");
+            }
         }
     }
-}
 
     public static String getValidatedGender(String s) {
         while (true) {
@@ -217,53 +218,37 @@ public class InputValidator {
 
         Scanner scanner = new Scanner(System.in);
         int choice;
-while (true){
-    try{
-        System.out.println(s);
-        System.out.println("1.Cardiology");
-        System.out.println("2.Neurology");
-        System.out.println("3.Orthopedics");
-        System.out.println("4.Pediatrics");
-        System.out.println("5.Dermatology");
-        choice = scanner.nextInt();
-        System.out.println();
-        switch (choice) {
-            case 1:
-                return "Cardiology";
-            case 2:
-                return "Neurology";
-            case 3:
-                return "Orthopedics";
-            case 4:
-                return "Pediatrics";
-            case 5:
-                return "Dermatology";
-            default:
-                System.out.println("Invalid Choice, Please select valid department number");
-                break;
+        while (true) {
+            try {
+                System.out.println(s);
+                System.out.println("1.Cardiology");
+                System.out.println("2.Neurology");
+                System.out.println("3.Orthopedics");
+                System.out.println("4.Pediatrics");
+                System.out.println("5.Dermatology");
+                choice = scanner.nextInt();
+                System.out.println();
+                switch (choice) {
+                    case 1:
+                        return "Cardiology";
+                    case 2:
+                        return "Neurology";
+                    case 3:
+                        return "Orthopedics";
+                    case 4:
+                        return "Pediatrics";
+                    case 5:
+                        return "Dermatology";
+                    default:
+                        System.out.println("Invalid Choice, Please select valid department number");
+                        break;
+                }
+
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                scanner.nextLine();
+            }
         }
 
-        } catch (Exception e) {
-        System.out.println("Invalid input. Please enter a number between 1 and 5.");
-        scanner.nextLine();
-            }
     }
-
-    }
-
-//    public static String getValidatedYN(String s) {
-//        Scanner scanner = new Scanner(System.in);
-//        String textPattern = "[YN]";
-//
-//        while (true) {
-//            System.out.print(s);
-//            String input = scanner.nextLine().trim();
-//
-//            if (Pattern.matches(textPattern, input)) {
-//                return input;
-//            } else {
-//                System.out.println("Choose Between Y & N");
-//            }
-//        }
-//    }
 }
