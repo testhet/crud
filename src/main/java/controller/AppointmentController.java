@@ -26,7 +26,7 @@ public class AppointmentController {
     private AppointmentDAO appointmentDAO = new AppointmentDAO();
     private DoctorDAO doctorDAO = new DoctorDAO();
 
-    public List printAvailableTimeSlots(int doctorId, String date) throws SQLException {
+    public List<String> printAvailableTimeSlots(int doctorId, String date) throws SQLException {
         List<String> bookedSlots = appointmentDAO.bookedTimeslots(doctorId, date);
         List<String> availableSlots = new ArrayList<>(timeSlots);
         availableSlots.removeAll(bookedSlots);
@@ -60,7 +60,7 @@ public class AppointmentController {
         appointment.setPatient_id(user.getId());
         String date = InputValidator.getValidatedDateFuture("Enter appointment date (YYYY-MM-DD): ");
         appointment.setAppointment_date(date);
-        List availableTimeSlots = printAvailableTimeSlots(id, date);
+        List<String> availableTimeSlots = printAvailableTimeSlots(id, date);
         String time;
         while (true){
             time = InputValidator.getValidatedTime("New Time For Appointment: ");
@@ -71,7 +71,7 @@ public class AppointmentController {
                 System.out.println("Appointment scheduled successfully.");
                 break;
             }else {
-                System.out.println("Please Select Slot From Abive List");
+                System.out.println("Please Select Slot From Above List");
             }
         }
 
@@ -138,7 +138,7 @@ public class AppointmentController {
             if (appointmentDAO.getAppointmentStatus(appointmentID)) {
                 String date = InputValidator.getValidatedDateFuture("New Date For the Appointment: ");
                 int doctorID = appointmentDAO.doctorIDFromAppointmentID(appointmentID);
-                List availableTimeSlots = printAvailableTimeSlots(doctorID, date);
+                List<String> availableTimeSlots = printAvailableTimeSlots(doctorID, date);
                 String time;
                 while (true){
                     time = InputValidator.getValidatedTime("New Time For Appointment: ");
@@ -147,7 +147,7 @@ public class AppointmentController {
                         System.out.println("SuccessFully Re-Scheduled Appointment For Date: " + date + " & Time: " + time);
                         break;
                     }else {
-                        System.out.println("Please Select Slot From Abive List");
+                        System.out.println("Please Select Slot From Above List");
                     }
                 }
             } else {

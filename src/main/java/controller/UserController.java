@@ -108,19 +108,28 @@ public class UserController {
 
     public void updatePassword (User user) throws SQLException{
         String password ;
+        String currentPassword;
         String cnfPassword ;
         String email = user.getEmail();
+        do{
+            currentPassword = InputValidator.getValidatedPassword("Enter Current Password (OR Enter 0 TO exit) : ");
+            if("0".equals(currentPassword)){
+                return;
+            }
+            if(currentPassword.equals(user.getPassword())){
             do {
-                password = InputValidator.getValidatedPassword("Enter New Password (OR Enter 0 TO exit) : ");
-                if("0".equals(password)){
-                    return;
-                }
+                password = InputValidator.getValidatedPassword("Enter New Password : ");
                 cnfPassword = InputValidator.getValidatedPassword("Enter Confirm Password: ");
                 if (!password.equals(cnfPassword)) {
                     System.out.println("Passwords do not match. Please try again.");
                 }
             } while (!password.equals(cnfPassword));
-        userDAO.updatePassword(email,password);
-        System.out.println("Password updated successfully!");
+            userDAO.updatePassword(email,password);
+            System.out.println("Password updated successfully!");}
+            else {
+                System.out.println("Incorrect Current Password.");
+            }
+        }while (!currentPassword.equals(user.getPassword()));
+
     }
 }
