@@ -22,7 +22,7 @@ public class DoctorDAO {
     }
 
     public boolean doctorExist(int id) throws  SQLException {
-      String sql = "SELECT * FROM users WHERE id = ? && role = \"doctor\" ";
+      String sql = "SELECT 1 FROM users WHERE id = ? && role = \"doctor\" LIMIT 1";
       try (Connection connection = DBconnection.getConnection();
       PreparedStatement stmt = connection.prepareStatement(sql)
       ) {
@@ -67,11 +67,10 @@ public class DoctorDAO {
 
     public boolean associatedPatientExist(int Did,int Pid) throws SQLException {
         String sql = """
-                SELECT DISTINCT a.patient_id , u.user_name , p.date_of_birth , p.gender , p.address, p.phone ,p.insuranceID
-                FROM users u
-                JOIN patients p ON p.patient_id = u.id
-                JOIN appointment a ON a.patient_id = p.patient_id
-                WHERE a.doctor_id = ? && a.patient_id = ? ;
+                SELECT 1
+                FROM appointment a
+                WHERE a.doctor_id = ? AND a.patient_id = ?
+                LIMIT 1;
                 """;
         try(Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)){

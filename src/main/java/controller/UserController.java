@@ -18,7 +18,7 @@ public class UserController {
             email = InputValidator.getValidatedEmail("Enter Email With You Want to Sign-up : ");
             try {
                 if (userDAO.isEmailExist(email)) {
-                    System.out.println("Email already exists. Please enter a different one.");
+                    System.out.println("Email already exists. Please enter a different one : ");
                 } else {
                     break;
                 }
@@ -44,7 +44,6 @@ public class UserController {
         while (true) {
             email = InputValidator.getValidatedEmail("Enter Email For Which You Want To Change Password : ");
             System.out.println();
-
                         if(!userDAO.isEmailExist(email)){
                             System.out.println("Email Does Not Exist, Please Enter Existing Email.");
                             break;
@@ -59,12 +58,9 @@ public class UserController {
                             continue;
                         }
                         do {
-
                             password = InputValidator.getValidatedPassword("Enter New Password: ");
-
                             System.out.println();
                             cnfPassword = InputValidator.getValidatedPassword("Enter Confirm Password: ");
-
                             if (!password.equals(cnfPassword)) {
                                 System.out.println("Passwords do not match. Please try again.");
                             }
@@ -126,6 +122,5 @@ public class UserController {
             } while (!password.equals(cnfPassword));
         userDAO.updatePassword(email,password);
         System.out.println("Password updated successfully!");
-
     }
 }

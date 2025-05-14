@@ -66,7 +66,7 @@ public class PatientDAO {
 
 
     public boolean phoneExist(long  s) throws SQLException{
-        String sql = "SELECT * FROM patients WHERE phone = ?";
+        String sql = "SELECT 1 FROM patients WHERE phone = ? LIMIT 1;";
         try(Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, s);
@@ -76,7 +76,7 @@ public class PatientDAO {
     }
 
     public boolean insuranceIDExist(String s) throws SQLException{
-        String sql = "SELECT * FROM patients WHERE insuranceID = ?";
+        String sql = "SELECT 1 FROM patients WHERE insuranceID = ? LIMIT 1;";
         try(Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)){
         stmt.setString(1,s);

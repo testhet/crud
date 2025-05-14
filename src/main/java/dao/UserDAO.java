@@ -57,7 +57,7 @@ public class UserDAO {
     }
 
     public boolean isDoctor(String s) throws SQLException {
-        String sql = "SELECT * FROM users WHERE email = ? && role =\"doctor\";";
+        String sql = "SELECT 1 FROM users WHERE email = ? AND role =\"doctor\" LIMIT 1;";
         try(Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)){
         stmt.setString(1, s.trim());
@@ -67,7 +67,7 @@ public class UserDAO {
     }
 
     public boolean isEmailExist(String s) throws SQLException {
-        String sql = "SELECT * FROM users WHERE LOWER(email) = LOWER(?);";
+        String sql = "SELECT 1 FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1;";
         try(Connection connection = DBconnection.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, s.trim());
@@ -89,11 +89,10 @@ public class UserDAO {
     public boolean dobMatch(String email, String dob) throws  SQLException {
         String sql = """
                     SELECT
-                        u.email,
-                        p.date_of_birth
+                       1
                     FROM users u
                     JOIN patients p ON p.patient_id = u.id
-                    WHERE  u.email = ? && p.date_of_birth = ?;
+                    WHERE  u.email = ? AND p.date_of_birth = ? LIMIT 1;
                 """;
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {

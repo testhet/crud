@@ -4,6 +4,8 @@ import config.DBconnection;
 import model.Appointment;
 import model.User;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppointmentDAO {
 
@@ -15,14 +17,28 @@ public class AppointmentDAO {
             stmt.setInt(1, appointment.getDoctor_id());
             stmt.setInt(2, appointment.getPatient_id());
             stmt.setDate(3, Date.valueOf(appointment.getAppointment_date()));
-            stmt.setTime(4, Time.valueOf(appointment.getAppointment_time()));
+            stmt.setString(4, appointment.getAppointment_time());
             stmt.setString(5, appointment.getStatus());
             stmt.executeUpdate();
         }
     }
 
+    public int doctorIDFromAppointmentID(int id) throws  SQLException {
+        String sql = "SELECT a.doctor_id AS dID FROM appointment a WHERE a.id = ? LIMIT 1;";
+        int a = 0;
+        try (Connection connection = DBconnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                a = rs.getInt("dID");
+            }
+        }
+        return a;
+    }
+
     public boolean appointmentExistPatient(int id, int patientID) throws SQLException {
-        String sql = "SELECT * FROM appointment WHERE id = ? && patient_id = ?;";
+        String sql = "SELECT 1 FROM appointment WHERE id = ? AND patient_id = ? LIMIT 1;";
         ResultSet rs;
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -33,9 +49,30 @@ public class AppointmentDAO {
         }
     }
 
+    public List<String> bookedTimeslots(int doctorId, String date) throws SQLException {
+        List<String> bookedSlots = new ArrayList<>();
+        String sql = """
+                SELECT
+                    a.appointment_time AS BookedSlots
+                FROM appointment a
+                WHERE a.doctor_id = ? AND a.appointment_date = ? AND a.status = "Scheduled";
+                """;
+        try (Connection connection = DBconnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, doctorId);
+            stmt.setDate(2, Date.valueOf(date));
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String slot = rs.getString("BookedSlots");
+                bookedSlots.add(slot.trim());
+            }
+        }
+        return bookedSlots;
+    }
+
 
     public boolean appointmentExistDoctor(int id, int DoctorID) throws SQLException {
-        String sql = "SELECT * FROM appointment WHERE id = ? && doctor_id = ?;";
+        String sql = "SELECT 1 FROM appointment WHERE id = ? AND doctor_id = ? LIMIT 1;";
         ResultSet rs;
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -61,14 +98,14 @@ public class AppointmentDAO {
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(date));
-            stmt.setTime(2, Time.valueOf(time));
+            stmt.setString(2, time);
             stmt.setInt(3, id);
             stmt.executeUpdate();
         }
     }
 
     public boolean getAppointmentStatus(int id) throws SQLException {
-        String sql = "SELECT * FROM appointment WHERE id = ? && status = \"Scheduled\" ; ";
+        String sql = "SELECT 1 FROM appointment WHERE id = ? AND status = \"Scheduled\" LIMIT 1; ";
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -126,7 +163,7 @@ public class AppointmentDAO {
                         String Gender = rs.getString("Gender");
                         String Phone = rs.getString("Phone");
                         java.util.Date date = rs.getDate("Date");
-                        Time time = rs.getTime("Time");
+                        String time = rs.getString("Time");
                         String status = rs.getString("Appointment Status");
                         System.out.printf("%-13s %-13s %-25s %-18s %-22s %-22s %-20s %-22s%n", appointmentID, patientID, PatientName, Gender, Phone, date, time, status);
                     } rs.close();
@@ -142,7 +179,7 @@ public class AppointmentDAO {
                         String DoctorName = rs.getString("DoctorName");
                         String Department = rs.getString("Department");
                         java.util.Date date = rs.getDate("Date");
-                        Time time = rs.getTime("Time");
+                        String time = rs.getString("Time");
                         String status = rs.getString("Appointment Status");
                         System.out.printf("%-13s %-13s %-25s %-22s %-22s %-20s %-22s%n", appointmentID, doctorID, DoctorName, Department, date, time, status);
                     } rs.close();

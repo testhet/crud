@@ -6,9 +6,7 @@ public class Appointment {
     private int patient_id;
     private String appointment_date;
     private String getAppointment_time;
-    private String reason;
     private String status;
-    private String created_at;
 
     public int getId() {
         return id;
@@ -50,13 +48,6 @@ public class Appointment {
         this.getAppointment_time = getAppointment_time;
     }
 
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
 
     public String getStatus() {
         return status;
@@ -66,11 +57,5 @@ public class Appointment {
         this.status = status;
     }
 
-    public String getCreated_at() {
-        return created_at;
-    }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
 }
