@@ -58,23 +58,31 @@ public class AppointmentController {
             }
         }while (!doctorExiast);
         appointment.setPatient_id(user.getId());
-        String date = InputValidator.getValidatedDateFuture("Enter appointment date (YYYY-MM-DD): ");
-        appointment.setAppointment_date(date);
-        List<String> availableTimeSlots = printAvailableTimeSlots(id, date);
-        String time;
-        while (true){
-            time = InputValidator.getValidatedTime("New Time For Appointment: ");
-            if(availableTimeSlots.contains(time)){
-                appointment.setAppointment_time(time);
-                appointment.setStatus("Scheduled");
-                appointmentDAO.addAppointment(appointment);
-                System.out.println("Appointment scheduled successfully.");
-                break;
-            }else {
-                System.out.println("Please Select Slot From Above List");
+        boolean available;
+        do{
+            String date = InputValidator.getValidatedDateFuture("Enter appointment date (YYYY-MM-DD): ");
+            appointment.setAppointment_date(date);
+            List<String> availableTimeSlots = printAvailableTimeSlots(id, date);
+            if(availableTimeSlots.isEmpty()){
+                available = false;
+                System.out.println("No Slot Available For "+date+" Please Choose Another Date.");
+                continue;
             }
-        }
-
+            available = true;
+            String time;
+            while (true){
+                time = InputValidator.getValidatedTime("New Time For Appointment: ");
+                if(availableTimeSlots.contains(time)){
+                    appointment.setAppointment_time(time);
+                    appointment.setStatus("Scheduled");
+                    appointmentDAO.addAppointment(appointment);
+                    System.out.println("Appointment scheduled successfully.");
+                    break;
+                }else {
+                    System.out.println("Please Select Slot From Above List");
+                }
+            }
+        }while (available);
     }
 
 
@@ -136,20 +144,31 @@ public class AppointmentController {
             }
             if(appointmentDAO.appointmentExistPatient(appointmentID, user.getId())){
             if (appointmentDAO.getAppointmentStatus(appointmentID)) {
-                String date = InputValidator.getValidatedDateFuture("New Date For the Appointment: ");
-                int doctorID = appointmentDAO.doctorIDFromAppointmentID(appointmentID);
-                List<String> availableTimeSlots = printAvailableTimeSlots(doctorID, date);
-                String time;
-                while (true){
-                    time = InputValidator.getValidatedTime("New Time For Appointment: ");
-                    if(availableTimeSlots.contains(time)){
-                        appointmentDAO.rescheduleAppointment(appointmentID, date, time);
-                        System.out.println("SuccessFully Re-Scheduled Appointment For Date: " + date + " & Time: " + time);
-                        break;
-                    }else {
-                        System.out.println("Please Select Slot From Above List");
+                boolean available;
+                do{
+
+                    String date = InputValidator.getValidatedDateFuture("New Date For the Appointment: ");
+                    int doctorID = appointmentDAO.doctorIDFromAppointmentID(appointmentID);
+                    List<String> availableTimeSlots = printAvailableTimeSlots(doctorID, date);
+                    if(availableTimeSlots.isEmpty()){
+                        available = false;
+                        System.out.println("No Slot Available For "+date+" Please Choose Another Date.");
+                        continue;
                     }
-                }
+                    available = true;
+                    String time;
+                    while (true){
+                        time = InputValidator.getValidatedTime("New Time For Appointment: ");
+                        if(availableTimeSlots.contains(time)){
+                            appointmentDAO.rescheduleAppointment(appointmentID, date, time);
+                            System.out.println("SuccessFully Re-Scheduled Appointment For Date: " + date + " & Time: " + time);
+                            break;
+                        }else {
+                            System.out.println("Please Select Slot From Above List");
+                        }
+                    }
+                }while (available);
+
             } else {
                 System.out.println("Cancelled Or Completed Appointments can't be Updated.");
                 }
